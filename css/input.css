@@ -1,0 +1,226 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s;  
+  -webkit-text-fill-color: #e5e7eb;
+}
+
+input:focus-visible {
+  outline: 1px solid cornflowerblue;
+}
+
+textarea:focus-visible {
+  outline: 1px solid cornflowerblue;
+}
+
+select:focus-visible {
+  outline: 1px solid cornflowerblue;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+input:checked ~ .dot {
+  transform: translateX(100%);
+}
+
+input:checked ~ .toggleBg {
+  background-color: blue;
+  transition: background-color 0.2s ease;
+}
+
+#reader {
+  border: none !important;
+}
+
+#reader img[alt="Info icon"] {
+  display: none;
+}
+
+#reader img[alt="Camera based scan"] {
+  width: 100px !important;
+  height: 100px !important;
+  margin: auto;
+  filter: brightness(0) saturate(100%) invert(20%) sepia(8%) saturate(2388%) hue-rotate(205deg) brightness(102%) contrast(82%);
+}
+
+#reader img[alt="Fule based scan"] {
+  display: none !important;
+}
+
+#reader button {
+  width: 100%;
+  border-radius: 8px;
+  padding: 12px 12px 13px 12px;
+  margin-top: 6px;
+  color: #fff;
+}
+
+#html5-qrcode-anchor-scan-type-change {
+  text-decoration: none !important;
+  font-weight: 500;
+  color: #1d9bf0;
+  margin-top: 12px;
+}
+
+#reader__dashboard_section > div > div {
+  border: none !important;
+}
+
+#reader__header_message {
+  border: none !important;
+  color: white !important;
+}
+
+#html5-qrcode-button-camera-permission {
+  margin-bottom: 10px;
+  background-color: #1d4ed8;
+}
+
+#html5-qrcode-button-file-selection {
+  visibility: hidden;
+}
+
+#html5-qrcode-button-file-selection:after {
+  content: "Upload an image";
+  visibility: visible;
+  display: inline-block;
+  width: 100%;
+  border: 1px solid #434141;
+  border-radius: 8px;
+  padding: 10px 8px 11px 8px;
+  margin-top: 6px;
+  margin-bottom: 4px;
+}
+
+.card {
+  @apply flex flex-col col-span-1 justify-between p-5 rounded-lg border border-neutral-800
+}
+.input {
+  @apply w-full text-gray-100 bg-transparent py-2.5 px-3 border border-gray-800 rounded-lg mt-1 placeholder-gray-500;
+}
+.swap {
+  @apply w-3/4 text-3xl text-white bg-transparent pt-1 pl-4 placeholder-gray-600 outline-none focus:outline-none;
+}
+.textarea {
+  @apply w-full py-2 px-3 border rounded-lg mt-1;
+}
+.label {
+  @apply text-sm text-gray-400 ml-1;
+}
+.btn {
+  @apply text-white font-medium p-2.5 rounded-lg cursor-pointer;
+}
+.btn-top {
+  @apply w-36 h-12 text-sm bg-blue-700 text-white font-bold rounded-lg;
+}
+.btn-blue {
+  @apply bg-blue-600 disabled:opacity-75;
+}
+.btn-blue:hover {
+  @apply bg-blue-600/90;
+}
+.x-btn {
+  @apply text-sm text-gray-300 font-medium px-4 py-1 border border-gray-800 rounded cursor-pointer hover:bg-gray-900/70;
+}
+.active {
+  @apply bg-slate-950 text-gray-200 rounded-lg;
+}
+.swapTab {
+  @apply bg-gray-700/30 text-gray-200 rounded-lg px-3;
+}
+.ordersTab {
+  @apply bg-gray-700/30 text-gray-200 rounded-lg px-3;
+}
+.icon {
+  @apply h-4 w-4 inline text-gray-200;
+}
+.icon2 {
+  @apply h-5 w-5 inline text-gray-600;
+}
+.x-icon {
+  @apply h-6 w-6 inline text-gray-600 ml-1 mr-2 mb-1;
+}
+.arrow {
+  @apply h-6 w-6 text-gray-400;
+}
+.token {
+  @apply text-lg font-semibold bg-[#0A0A0A] rounded-lg border border-gray-800 px-3 py-1 mr-5;
+}
+.tableCell {
+  @apply text-gray-300/90 text-sm text-right py-1 hidden md:table-cell;
+}
+.dropdown {
+  @apply hover:bg-gray-900/50 px-4 py-2 cursor-pointer;
+}
+.name {
+  @apply text-left text-gray-300 py-1 hidden md:table-cell;
+}
+.nameMobile {
+  @apply text-left text-gray-300 font-semibold text-nowrap md:hidden;
+}
+.flag {
+  @apply -mr-1 h-10 w-8 inline text-gray-600 md:hidden;
+}
+
+/* Market CSS */
+
+.link {
+  @apply border-b border-gray-200 hover:text-purple-700 hover:underline cursor-pointer;
+}
+.link2 {
+  @apply hover:underline cursor-pointer;
+}
+.nameM {
+  @apply text-2xl text-black pt-6 px-1 font-medium;
+}
+.regionDiv {
+  @apply md:flex w-full border-t border-gray-400 md:p-2;
+}
+.state {
+  @apply text-black pt-4 font-medium;
+}
+.col {
+  @apply flex flex-col float-left w-full px-2 md:p-2;
+}
+.section {
+  @apply flex font-semibold font-sans bg-gray-200 border-t border-b border-gray-300 justify-center;
+}
+.checkbox {
+  @apply mr-2 ml-1 cursor-pointer;
+}
+.continueBtn {
+  @apply text-xl font-medium bg-gray-100 border border-gray-400 mt-8 px-2 m-4;
+}
+.subDiv {
+  @apply w-full h-screen bg-white pt-6 pl-12 md:pt-12 md:pl-4 lg:pl-32;
+}
+.labelM {
+  @apply p-1.5 text-gray-700 cursor-pointer;
+}
+.msgBox {
+  @apply flex font-medium font-sans bg-gray-200 border-t border-b border-gray-300 justify-start pl-2 py-1.5;
+}

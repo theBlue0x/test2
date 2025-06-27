@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Together. We Are the Bank.">
+<link rel="shortcut icon" href="./img/favicon.ico">
+<link rel="stylesheet" href="./css/styles.css">
+<title>Blue0x</title>
+</head>
+<body class="min-h-screen flex w-full items-center justify-center bg-[#0A0A0A] px-2" onload="nodeState()">
+
+<div id="dummyDiv" class="flex justify-center items-center w-full grow"> <!-- DUMMY DIV TO HIDE -->
+
+	<div class="py-5 px-6 w-full rounded-lg border border-neutral-800 md:w-[400px]">
+		<h1 class="flex justify-between mb-5 text-2xl font-semibold text-gray-200">
+			Connect Wallet
+			<span id="state" class="flex items-center pr-1 text-sm font-medium text-green-500">
+				<span class='flex flex-shrink-0 w-2 h-2 bg-green-500 rounded-full me-1'></span>
+					 Syncing
+			</span>
+		</h1>
+		<form id="form"> 
+			<div class="relative w-full">  
+        <label for="account" class="label">BLX Account</label>
+        <input type="text" id="account" name="account" placeholder="BLX -" class="input" spellcheck="false" oninput="clearError()" required />
+        <div class="flex absolute inset-y-0 right-0 items-center mt-7 mr-3"> 
+            <img onclick="qrScan()" class="cursor-pointer icon" src="./img/qr-code.svg">
+        </div>
+      </div>
+			<button type="submit" id="btn" class="mt-3.5 mb-3 w-full btn btn-blue text-lg">Connect Wallet</button>
+			<button type="submit" id="loadingBtn" class="hidden mt-3.5 mb-3 w-full btn btn-blue text-lg" disabled><img class="-ml-2 animate-spin icon" src="./img/loader.svg">&nbsp;loading...</button>
+			<span id="error" class="text-sm text-red-500" style="display:none"></span>
+			<p class="mt-3 mb-1 text-sm text-gray-400">
+				Don’t have an account yet? <a href="./newAccount" class="text-blue-500">Create one</a>
+			</p>
+		</form>
+	</div>
+
+	</div> <!-- DUMMY DIV TO HIDE -->
+
+	<!-- QR Scanner Modal-->
+  <div id="qr_scan" class="flex hidden justify-center items-center -mx-2 -mt-16 w-full text-white md:mt-0 grow">
+    <div class="p-4 w-full md:rounded-lg md:border md:border-neutral-800 md:max-w-[375px]">
+      <div id="reader"></div>
+
+      <button onclick="qrModal()" class="pt-2.5 pb-3 px-3 mt-2 w-full text-lg font-medium text-white rounded-lg border cursor-pointer border-neutral-800 hover:bg-gray-700/25">Cancel</button>
+    </div>
+  </div>
+<script src="./js/constants.js"></script>
+<script src="./js/cryptojs.min.js"></script>
+<script src="./js/qrscan.min.js"></script>
+<script>
+const inactive = sessionStorage.getItem("inactivity")
+if(inactive == "true") {
+	document.getElementById('error').style.display = "flex"
+  document.getElementById('error').innerText = "Session timed out due to inactivity."
+  sessionStorage.clear()
+}
+
+const form = document.getElementById('form')
+form.addEventListener('submit', async function (e) { 
+e.preventDefault()
+document.getElementById('btn').style.display = "none"
+document.getElementById('loadingBtn').style.display = "inline"
+const currency = localStorage.getItem("currency")
+if(!currency) {
+	localStorage.setItem("currency", "USDX")
+}
+const a = account.value
+const params = new URLSearchParams({
+  requestType: 'getAccount',
+  account: a
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+const isAccount = data.accountRS
+const errorDescription = data.errorDescription
+const pubKey = data.publicKey
+if(!errorDescription) {
+	sessionStorage.setItem('account', a)
+	sessionStorage.setItem('pubKey', pubKey)
+	const last = a.slice(19)
+	sessionStorage.setItem('last', last)
+	window.location.replace('./dashboard')
+}
+else if(errorDescription == "Unknown account") {
+	sessionStorage.setItem('account', a)
+	const last = a.slice(19)
+	sessionStorage.setItem('last', last)
+	window.location.replace('./dashboard')
+} else {
+		document.getElementById('btn').style.display = "block"
+  	document.getElementById('loadingBtn').style.display = "none"
+  	document.getElementById('error').style.display = "flex"
+  	document.getElementById('error').innerText = "An error has occured. Please try again."
+}})
+.catch((error) => {
+	console.log(error)
+	document.getElementById('btn').style.display = "block"
+	document.getElementById('loadingBtn').style.display = "none"
+	document.getElementById('error').style.display = "flex"
+	document.getElementById('error').innerText = "A network error occured."
+})})
+
+function nodeState() {
+const params = new URLSearchParams({
+  requestType: 'getState'
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+const blocks = data.numberOfBlocks
+const state = data.blockchainState
+let chainState 
+if(state == "UP_TO_DATE"){
+chainState = "<span class='flex flex-shrink-0 w-2 h-2 bg-green-500 rounded-full me-1'></span> Synced"
+} else {
+chainState = "<span class='flex flex-shrink-0 w-2 h-2 bg-green-500 rounded-full me-1'></span> Syncing"
+}
+document.getElementById("state").innerHTML = chainState
+})
+.catch((error) => {
+	console.log(error)
+	document.getElementById('state').innerHTML = '<span class="text-red-500">Offline</span>'
+})}
+setInterval(nodeState, 6000)
+
+function qrScan() {
+  document.getElementById("dummyDiv").classList.toggle("hidden")
+  document.getElementById("qr_scan").classList.toggle("hidden")
+ 
+  var html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader", { fps: 10, qrbox: 250 })
+    
+  function onScanSuccess(decodedText, decodedResult) {
+    document.getElementById("account").value = decodedText
+    document.getElementById("qr_scan").classList.toggle("hidden")
+    document.getElementById("dummyDiv").classList.toggle("hidden")
+    html5QrcodeScanner.clear()
+    }
+    html5QrcodeScanner.render(onScanSuccess);
+}
+
+// QR MODAL TOGGLE // 
+function qrModal() {
+  document.getElementById("dummyDiv").classList.remove("hidden")
+  document.getElementById("qr_scan").classList.toggle("hidden")
+}
+
+function clearError() {
+	document.getElementById('error').innerText = ""
+	document.getElementById('error').style.display = "none"
+}
+</script>
+</body>
+</html>

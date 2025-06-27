@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Together. We Are the Bank.">
+<link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="stylesheet" href="../css/styles.css">
+<title>Blue0x</title>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-[#0A0A0A] p-2">
+	<div id="card" class="p-5 rounded-lg border max-w-[390px] border-neutral-700">
+		<h1 class="flex justify-between mb-6 text-2xl font-semibold text-gray-200">Default Currency</h1>
+		<button onclick="dropdown()" class="inline-flex items-center py-3 pl-6 mb-2 w-full font-medium text-center text-gray-400 bg-transparent rounded-lg border focus:ring-1 min-w-[300px] border-neutral-700 focus:ring-blue-500/50">Select your default currency <svg class="m-auto w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+		</button>
+	</div>
+
+	<!-- Dropdown menu -->
+	<div class="hidden w-[350px] bg-[#0A0A0A] z-500 list-none border border-neutral-800 rounded p-2" id="dropdown">
+		<div class="overflow-y-auto max-h-[50vh] scrollbar-thin scrollbar-thumb-gray-800 scrollbar-track-black border border-neutral-800 rounded-xl">
+			<ul class="py-1 font-medium text-gray-300">
+				<li class="dropdown" onclick="setCurrency('AUDX')"> <img class="mr-1 mb-1 icon" src="../img/flags/au.svg">AUDX - Australian Dollar
+				</li>
+				<li class="dropdown" onclick="setCurrency('GBPX')"> <img class="mr-1 mb-1 icon" src="../img/flags/gb.svg">GBPX - British Pound
+				</li>
+				<li class="dropdown" onclick="setCurrency('CADX')"> <img class="mr-1 mb-1 icon" src="../img/flags/ca.svg">CADX - Canadian Dollar
+				</li>
+				<li class="dropdown" onclick="setCurrency('CNYX')"> <img class="mr-1 mb-1 icon" src="../img/flags/cn.svg">CNYX - Chinese Yuan
+				</li>
+				<li class="dropdown" onclick="setCurrency('EURX')"> <img class="mr-1 mb-1 icon" src="../img/flags/eu.svg">EURX - Euro
+				</li>
+				<li class="dropdown" onclick="setCurrency('IRRX')"> <img class="mr-1 mb-1 icon" src="../img/flags/ir.svg">IRRX - Iranian Rial
+				</li>
+				<li class="dropdown" onclick="setCurrency('IQDX')"> <img class="mr-1 mb-1 icon" src="../img/flags/iq.svg">IQDX - Iraqi Dinar
+				</li>
+				<li class="dropdown" onclick="setCurrency('JPYX')"> <img class="mr-1 mb-1 icon" src="../img/flags/jp.svg">JPYX - Japanese Yen
+				</li>
+				<li class="dropdown" onclick="setCurrency('NZDX')"> <img class="mr-1 mb-1 icon" src="../img/flags/nz.svg">NZDX - New Zealand Dollar
+				</li>
+				<li class="dropdown" onclick="setCurrency('CHFX')"> <img class="mr-1 mb-1 icon" src="../img/flags/ch.svg">CHFX - Swiss Franc
+				</li>
+				<li class="dropdown" onclick="setCurrency('USDX')"> <img class="mr-1 mb-1 icon" src="../img/flags/us.svg">USDX - United States Dollar
+				</li>
+				<li class="dropdown" onclick="setCurrency('RUBX')"> <img class="mr-1 mb-1 icon" src="../img/flags/ru.svg">RUBX - Russian Ruble
+				</li>
+			</ul>
+		</div>
+		<button onclick="dropdown()" class="p-3 mt-6 mb-1 w-full font-medium text-white rounded-lg border cursor-pointer bg-gray-700/20 border-neutral-800 hover:bg-gray-700/25">Cancel</button>
+	</div>
+<script>
+function setCurrency(currencyCode) {
+	localStorage.setItem("currency", currencyCode)
+	window.location.replace("../dashboard")
+}
+
+function back() {
+	window.location.replace("../dashboard")
+}
+
+function dropdown() {
+	document.getElementById("card").classList.toggle("hidden")
+	document.getElementById("dropdown").classList.toggle("hidden")
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="0xlist: the decentralized marketplace on the Blue0x blockchain">
+<title>0xlist: the decentralized marketplace on the Blue0x blockchain</title>
+<link rel="stylesheet" href="../../css/styles.css">
+<link rel="icon" type="image/x-icon" href="../../img/favicon.ico">
+</head>
+
+<body class="flex overflow-auto justify-center w-full min-h-screen text-blue-700 md:p-2">
+
+<div class="flex w-full lg:max-w-[900px]">
+
+<div class="hidden md:flex flex-col lg:h-[calc(100vh+290px)] overflow-auto w-[300px] bg-gray-100 border-l border-r border-gray-300 items-center">
+  <a class="flex inline-flex justify-center items-center pt-1 pb-4 w-full text-3xl cursor-pointer hover:underline" href="../"><img class="pr-1.5 w-7 h-7 text-purple-500" src="../../img/computer.svg">0xlist</a>
+</div>
+
+
+<div class="flex grid relative items-center w-full h-11 border-t border-b border-gray-300 md:mx-3 bg-gray-200/70">
+  <p class="pt-1 pl-4 text-2xl text-black">messages</p>
+  <div class="inline-flex absolute right-5">
+    <div class="cursor-pointer">
+      <a href="javascript: history.go(-1)"><< back</a>
+    </div>
+  </div>
+
+  <div class="mt-4 mx-2 md:mx-0">
+    <div class="flex overflow-hidden relative items-center w-full h-8 bg-white rounded border border-gray-300">
+      <div class="grid place-items-center w-8 h-full text-gray-400 border-r border-gray-300">
+        <img class="w-4 h-4" src="../../img/search.svg">
+      </div>
+        <input class="pl-1.5 w-full h-full text-sm text-gray-700 outline-none focus:outline-none" type="text" id="search" placeholder="search messages..." > 
+    </div>
+  </div>
+
+  <div class="flex mt-2 mx-2 md:mx-0 justify-end">
+    <button onclick="showDropdown(1)" class="inline-flex relative pr-2 pl-3 py-0.5 text-black rounded border border-gray-300">actions&nbsp;<img class="mt-1.5 h-4 w-3.5" src="../../img/chevron-down2.svg"> </button>
+    <div id="dropdown1" class="flex hidden absolute z-50 flex-col mt-9 text-black bg-white border border-gray-300">
+      <a class="py-1 px-4 mt-1 hover:bg-gray-100/50" href="#"><img class="inline-flex mr-2 mb-1 h-4 w-4" src="../../img/mail-open.svg">mark as read</a>
+      <a class="py-1 px-4 mb-1 -ml-0.5 hover:bg-gray-100/50" href="#"><img class="inline-flex mr-1.5 mb-1 h-4 w-5" src="../../img/trash-2.svg">delete all</a>
+    </div>     
+  </div>
+  
+  <div class="mt-2 mx-2 md:mx-0">
+  	<div id="loader" class="grid place-items-center mt-6">
+        <img class="w-5 h-5 animate-spin justify-center" src="../../img/loader-black.svg">
+     </div>
+    <div class="relative w-full">
+      <table class="w-full">
+      	<tbody id="msgTable"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="hidden flex-col items-center p-1 w-48 bg-gray-100 border-r border-l border-gray-300 md:flex">
+  
+</div>
+
+<script src="../../js/constants.js"></script>
+<script>
+const account = sessionStorage.getItem('account')
+
+function getMessages() {
+const params = new URLSearchParams({
+  requestType: 'getPrunableMessages',
+  account: account
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+const messages = data.prunableMessages
+if(messages.length == 0) {
+document.getElementById("loader").classList.add("hidden")
+}
+let otherAccount = ''
+let allAccounts = []
+let rows = ''
+for (var i = 0; i < messages.length; i++) {
+  if(messages[i].recipientRS == account) {
+  	otherAccount = messages[i].senderRS
+    if(allAccounts.includes(otherAccount)){
+      continue
+    } else {
+    allAccounts.push(otherAccount)
+    }
+  } else {
+  	otherAccount = messages[i].recipientRS
+    if(allAccounts.includes(otherAccount)){
+      continue
+    } else {
+    allAccounts.push(otherAccount)
+    }
+  }
+  rows += '<div class="flex relative font-semibold justify-between w-full py-2 px-3 mb-3.5 border border-gray-300 rounded cursor-pointer">'
+  rows += '<p onclick="readMessage(\'' + otherAccount + '\')" >' + otherAccount + '</p> <input class="absolute right-16 mt-1.5 w-3.5 h-3.5" type="checkbox" >'
+  rows += '<img class="absolute right-9 top-2.5 w-4 h-5" src="../../img/mail-open.svg" onclick="deleteMsg()">'
+  rows += '<img class="absolute right-3 top-2.5 w-4 h-5" src="../../img/trash-2.svg" onclick="deleteMsg()">'
+  rows += '</div>'
+document.getElementById("loader").classList.add("hidden")
+document.getElementById("msgTable").innerHTML = rows
+}})}
+
+getMessages()
+
+function deleteMsg() {
+console.log("Will be deleted")
+}
+
+function addToReadList() {
+console.log("Will be added to already read list")
+}
+
+function showDropdown(num) {
+document.getElementById("dropdown" + num).classList.toggle("hidden")
+}
+
+function readMessage(otherAccount){
+  window.location.href = '../read/?otherAccount='+ otherAccount
+}
+
+</script>
+</body>
+</html>

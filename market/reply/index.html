@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="0xlist: the decentralized marketplace on the Blue0x blockchain">
+<title>0xlist: the decentralized marketplace on the Blue0x blockchain</title>
+<link rel="stylesheet" href="../../css/styles.css">
+<link rel="icon" type="image/x-icon" href="../../img/favicon.ico">
+</head>
+<body class="font-medium text-gray-700">
+<div class="pt-3 w-full h-12 bg-gray-100 border-b border-gray-300 truncate">
+<p class="mx-5 font-semibold">reply to post</p>
+</div>
+<div id="loader" class="flex h-[calc(60dvh)] w-full justify-center items-center">
+ 	<img class="w-6 h-6 animate-spin" src="../../img/loader-black.svg">
+</div>
+
+<div id="page" class="hidden w-full h-screen bg-white md:px-2 md:pt-6 lg:px-36">
+ 	<div class="mt-4 md:-mt-1 mb-1 px-4 text-blue-600 cursor-pointer">
+		<button onclick="window.history.go(-1); return false;"><< back</button>
+	</div>
+
+	<form id="replyForm" class="flex flex-col justify-center w-full">
+		<div class="flex flex-col w-full">
+
+			<div class="pt-3 pb-2 px-4">
+		  		<h2 id="title" class="text-xl font-bold">&nbsp;</h2>
+		  	</div>
+
+		  	<div class="pb-1 px-4">
+		  		<h2>seller: <span id="seller" class="text-base font-semibold">&nbsp;</span></h2>
+		  	</div>
+
+		  	<div class="pb-2 px-4">
+		  		<h2>item: <span id="item" class="text-base font-semibold">&nbsp;</span></h2>
+		  	</div>
+		</div>
+
+		<div class="mt-1 w-full">
+			<div class="py-2 px-4 w-full md:w-3/4">
+		  	<label for="message" class="text-sm font-semibold">message</label><br>
+		  	<textarea id="message" required autocomplete="off" rows="6" name="message" class="py-1 px-2 w-full rounded-lg border border-gray-400"></textarea>
+		  </div>
+		</div>
+
+		<div class="mt-1 w-full md:w-3/4">
+			<div class="py-2 px-4 w-full">
+		  	<label for="secretPhrase" class="text-sm font-semibold">account secret phrase</label><br>
+		  	<input type="password" id="secretPhrase" required autocomplete="off" name="secretPhrase" class="py-1.5 px-2 w-full rounded-lg border border-gray-400">
+		  </div>
+		</div>
+
+		<div class="py-2 px-4">
+			<span id="account" class="text-sm text-gray-600"></span>
+		</div>
+
+		<div class="pb-4 mt-6 mb-4 ml-4">
+			<button type="submit" id="replyBtn" class="py-2 px-3 w-32 text-xl bg-gray-200 hover:bg-purple-200 rounded-lg border border-gray-500">
+				reply
+			</button>
+			<button id="replyBtnLoad" class="hidden py-2 px-3 w-32 text-xl bg-gray-200 rounded-lg border border-gray-500" disable>
+				...sending
+			</button>
+		</div>
+	</form> 
+</div>
+
+<!-- POST UPLOAD -->
+<div class="hidden flex w-full h-[calc(100dvh-225px)] bg-white md:pt-6 md:px-2 lg:px-32 justify-center items-center" id="messageResult">
+	<div class="text-xl max-w-[350px] h-15">
+
+		<p id="sending" class="mb-1 h-8"><img id="sendingSpin" class="inline mr-1.5 mb-1 w-4 h-4 animate-spin" src="../../img/loader-black.svg"><img id="sendingCheck" class="inline hidden mr-1.5 mb-1 w-6 h-6" src="../../img/check.svg">sending message</p>
+
+		<p id="confirming" class="invisible mb-1 h-8"><img id="confirmSpin" class="inline mr-1.5 mb-1 w-4 h-4 animate-spin" src="../../img/loader-black.svg"><img id="confirmCheck" class="inline hidden mr-1.5 mb-1 w-6 h-6" src="../../img/check.svg">confirming message</p>
+
+		<p id="finished" class="invisible mb-1 h-8"><img id="finishedCheck" class="inline mr-1.5 mb-1 w-6 h-6" src="../../img/check.svg">message sent!</p>
+
+		<div id="itemLink" class="invisible mt-8 ml-2">
+		<a id="link" class="pt-1 pb-2 px-5 text-xl bg-gray-200 rounded-lg border border-gray-400 cursor-pointer">view more listings</a>
+		</div>
+		<div id="itemLink2" class="invisible mt-6 ml-2">
+		<a id="link2" href="../messages" class="pt-1 pb-2 px-5 text-xl bg-gray-200 rounded-lg border border-gray-400 cursor-pointer">view messages</a>
+		</div>
+	</div>
+</div>
+
+<script src="../../js/constants.js"></script>
+<script src="../../js/cryptojs.min.js"></script>
+<script src="../../js/pako.min.js"></script>
+<script src="../../js/curve25519_.js"></script>
+<script src="../../js/messages.min.js"></script>
+<script>
+const account = sessionStorage.getItem('account')
+if(account == null) {
+document.getElementById("account").innerHTML = '* please <a class="text-blue-500 cursor-pointer" href="../../">login</a> first '
+} else {
+document.getElementById("account").innerText = '* logged in as ' + account
+}
+const queryString = window.location.search
+const urlParams = new URLSearchParams(queryString)
+const city = urlParams.get("city")
+const currency = urlParams.get("currency")
+const item = urlParams.get("item")
+const publicKey = sessionStorage.getItem('pubKey')
+
+const params = new URLSearchParams({
+  requestType: 'getDGSGood',
+  goods: item
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+const seller = data.sellerRS
+document.getElementById("seller").innerText = seller
+document.getElementById("item").innerText = item
+const title = data.name
+const x = JSON.parse(data.description)
+const description = x.d
+const neighborhood = x.neighborhood
+const price = x.price
+document.getElementById("title").innerText = title + ' - $' + price + ' (' + neighborhood + ')'
+document.getElementById("loader").classList.add("hidden")
+document.getElementById("page").classList.remove("hidden")
+})
+
+// SEND MESSAGE  //
+const form = document.getElementById('replyForm')
+form.addEventListener('submit', async function (e) { 
+e.preventDefault()
+document.getElementById('replyBtn').style.display = "none"
+document.getElementById('replyBtnLoad').style.display = "inline"
+const a = document.getElementById('seller').innerText
+const secretPhrase = document.getElementById('secretPhrase').value
+let pubKey = " "
+if(publicKey == 'undefined') {
+  pubKey = getPublicKey(secretPhrase)
+} else {
+  pubKey = publicKey
+}
+const i = document.getElementById('title').innerText
+const message = document.getElementById('message').value
+let m = {
+	t: 'dgs',
+	i: i,
+	m: message
+}
+const params = new URLSearchParams({
+  requestType: 'getAccountPublicKey',
+  account: a
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+  const errorDescription = data.errorDescription
+    if(!errorDescription) { 
+    	const recipientPublicKey = data.publicKey
+    	var x = encryptMessage(JSON.stringify(m), secretPhrase, recipientPublicKey)
+    	const params2 = new URLSearchParams({
+  			requestType: 'sendMessage',
+  			recipient: a,
+  			publicKey: pubKey,
+  			encryptedMessageData: x.encryptedMessageData,
+  			encryptedMessageNonce: x.encryptedMessageNonce,
+  			encryptedMessageIsText: true,
+  			encryptedMessageIsPrunable: true,
+  			feeNQT: 0,
+  			deadline: 60,
+  			broadcast: false
+			})
+			fetch(apiURL + params2, {method: 'POST'})
+			.then((response) => response.json())
+			.then((data2) => { 
+				const errorDescription2 = data2.errorDescription
+				if(!errorDescription2) {
+					document.getElementById("page").classList.add("hidden")
+					document.getElementById("messageResult").classList.remove("hidden")
+					const txJSON = data2.transactionJSON
+					const unsignedTxBytes = data2.unsignedTransactionBytes
+					const signedTx = sign(unsignedTxBytes, secretPhrase)
+					const signature = signedTx.signature
+					txJSON.signature = signature
+					const params3 = new URLSearchParams({
+		  			requestType: 'broadcastTransaction',
+		  			transactionJSON: JSON.stringify(txJSON)
+					})
+					fetch(apiURL + params3, {method: 'POST'})
+					.then((response) => response.json())
+					.then((data3) => { 
+						const errorDescription3 = data3.errorDescription
+						if(!errorDescription3) {
+							const z = data3.transaction
+							checkMessage(z, 0)
+						} else {
+							console.log(errorDescription3)
+						}
+					})
+				} else {
+					console.log(errorDescription2)
+				}
+			})
+    } else {
+    	console.log(errorDescription)
+}})})
+
+// RUN UNTIL TRANSACTION IS COMPLETE //   
+function checkMessage(tx, x) {
+var timer;
+let y = x
+y ++
+if(y == 4) {
+document.getElementById("sendingSpin").classList.add("hidden")
+document.getElementById("sendingCheck").classList.remove("hidden")
+document.getElementById("confirming").classList.remove("invisible")
+}
+const params = new URLSearchParams({
+  requestType: 'getBlockchainTransactions',
+  account: account,
+  nonPhasedOnly: true,
+  lastIndex: 0
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+const error = data.errorDescription
+const transactions = data.transactions
+if(!error && transactions[0].transaction == tx) {
+document.getElementById("sendingSpin").classList.add("hidden")
+document.getElementById("sendingCheck").classList.remove("hidden")
+document.getElementById("confirming").classList.remove("invisible")
+document.getElementById("confirmSpin").classList.add("hidden")
+document.getElementById("confirmCheck").classList.remove("hidden")
+document.getElementById("finished").classList.remove("invisible")
+document.getElementById("itemLink").classList.remove("invisible")
+document.getElementById("itemLink2").classList.remove("invisible")
+document.getElementById("link").setAttribute('href', '../item/?currency=' + currency + '&city=' + city)
+clearTimeout(timer)
+return
+} else {
+timer = setTimeout(function(){checkMessage(tx, y)}, 600)
+}})}
+
+function backToCategory() {
+  window.location.href = '../search/?currency=' + currency + '&city=' + city + '&section=' + type + '&category=' + category
+}
+
+function backToCity() {
+  window.location.href = '../city/?currency=' + currency + '&city=' + city
+}
+</script>
+</body>
+</html>

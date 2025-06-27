@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="0xlist: the decentralized marketplace on the Blue0x blockchain">
+<title>0xlist: the decentralized marketplace on the Blue0x blockchain</title>
+<link rel="stylesheet" href="../../css/styles.css">
+<link rel="icon" type="image/x-icon" href="../../img/favicon.ico">
+</head>
+
+<body class="flex justify-center w-full h-screen md:p-2">
+
+<div class="flex w-full lg:max-w-[900px] h-100dvh">
+
+<div class="hidden md:flex flex-col h-100dvh overflow-auto w-[300px] bg-gray-100 border-l border-r border-gray-300 items-center">
+  <a class="flex inline-flex justify-center items-center pt-1 pb-4 w-full text-blue-700 text-3xl cursor-pointer hover:underline" href="../"><img class="pr-1.5 w-7 h-7 text-purple-500" src="../../img/computer.svg">0xlist</a>
+</div>
+
+
+<div class="flex grid relative items-center w-full h-11 border-t border-b border-gray-300 md:mx-3 bg-gray-200/70">
+  <p class="pt-1.5 pl-4 text-lg text-black font-medium" id="otherAccount"></p>
+  <div class="inline-flex absolute right-5">
+    <div class="cursor-pointer text-blue-700">
+      <a href="javascript: history.go(-1)"><< back</a>
+    </div>
+  </div>
+  
+  <div class="relative w-full h-[calc(100dvh-73px)] mt-4 mx-2 md:mx-0">
+    <div id="tableDiv" class="w-full h-[calc(100dvh-120px)] overflow-y-auto overscroll-none">
+      <table class="w-full">
+      	<tbody id="msgTable"></tbody>
+      </table>
+
+      <div class="absolute bottom-0 left-0 w-10/12 md:w-11/12 min-h-10 bg-white ">
+      	<div class="flex overflow-hidden relative items-center w-full h-full bg-white rounded border border-gray-300">
+        	<div class="w-full min-h-10 p-2 text-black outline-none focus:outline-none disabled" id="message" contenteditable="true" onclick="removePlaceholder();" onkeypress="handle(event);removePlaceholder()">
+        	<span id="placeholder" class="text-gray-500">Send message...</span>
+        	</div>
+    	</div>
+      </div>
+       <div class="absolute bottom-0 right-4 md:right-0 min-h-10 bg-white ">
+      	<div class="flex overflow-hidden relative items-center w-full h-full bg-white cursor-pointer" id="sendBtn" onclick="sendMessage();">
+        	<img class="w-9 h-9" src="../../img/send.svg" id="sendBtnArrow">
+          <img class="w-9 h-9 animate-spin hidden" src="../../img/loader2.svg" id="sendBtnSpin">
+    	</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="hidden md:flex flex-col items-center p-1 w-48 bg-gray-100 border-r border-l border-gray-300">	
+</div>
+
+<!-- Hidden div for color gen in Tailwind for bg boxes-->
+<div class="hidden bg-blue-600">
+	<div class="bg-gray-200"></div>
+</div>
+
+</div>
+
+<script src="../../js/constants.js"></script>
+<script src="../../js/cryptojs.min.js"></script>
+<script src="../../js/pako.min.js"></script>
+<script src="../../js/curve25519_.js"></script>
+<script src="../../js/messages.min.js"></script>
+<script>
+let load = ''
+load += '<div id="loader" class="grid place-items-center mt-12">'
+load += '<img class="w-5 h-5 animate-spin justify-center" src="../../img/loader-black.svg">'
+load += '</div>'
+const publicKey = sessionStorage.getItem('pubKey')
+document.getElementById("msgTable").innerHTML = load
+const queryString = window.location.search
+const urlParams = new URLSearchParams(queryString)
+const otherAccount = urlParams.get("otherAccount")
+document.getElementById("otherAccount").innerText = otherAccount
+const account = sessionStorage.getItem('account')
+let count = 0
+let msgCount
+
+function getMessages() {
+var oldMsgCount = msgCount
+count ++
+const params = new URLSearchParams({
+  requestType: 'getPrunableMessages',
+  account: account,
+  otherAccount: otherAccount,
+  secretPhrase: "moment shade take poetry defense bag happiness appreciate forth innocent give hour"
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+const messages = data.prunableMessages
+msgCount = messages.length
+let rows = ''
+let side = ''
+let float = ''
+let item = ''
+let x = ''
+for (let i = messages.length - 1; i >= 0; i--) {
+const timestamp = messages[i].transactionTimestamp
+const date = getDate(timestamp)
+const decrypted = JSON.parse(messages[i].decryptedMessage)
+if(decrypted.t != "dgs") { continue }
+const text = decrypted.m
+	if(messages[i].recipientRS == account) {
+		side = "start"
+		float = "left"
+		txtColor = "black"
+		bgColor = "gray-200"
+	} else {
+		side = "end"
+		float = "right"
+		txtColor = "white"
+		bgColor = "blue-600"
+	}
+if(decrypted.i !== undefined) {
+	item = decrypted.i
+	x = item + '<br/><br/>' + text
+} else {
+	x = text
+}
+rows += '<div class="flex w-full justify-' + side + ' my-1.5 msg">'
+rows += '<p class="flex w-1/2 break-normal mr-5 md:mr-3 py-2 px-3 rounded-lg bg-' + bgColor + '"><span class="font-semibold text-' + txtColor + '">' + x + '<span/><br/><span class="font-medium text-xs text-' + txtColor + '">' + date + '<span/></p>'
+rows += '</div>'
+document.getElementById("msgTable").innerHTML = rows
+}
+if(msgCount > oldMsgCount){
+const chatContainer = document.getElementById("tableDiv")
+chatContainer.scrollTop = chatContainer.scrollHeight
+play()
+}
+if(count == 1){
+const chatContainer = document.getElementById("tableDiv")
+chatContainer.scrollTop = chatContainer.scrollHeight
+}})}
+
+getMessages()
+setInterval(getMessages, 5000)
+
+
+
+function sendMessage() {
+document.getElementById('message').setAttribute("contenteditable", false)
+const message = document.getElementById('message').innerText
+if (message == 'Send message...') { return }
+if (message == '') { return }
+
+// fix when secretPhrase modal is added
+const secretPhrase = "quick shade sense image window eternity horizon soft shield gently desire bid"
+document.getElementById("sendBtnArrow").classList.add("hidden")
+document.getElementById("sendBtnSpin").classList.remove("hidden")
+let pubKey = " "
+if(publicKey == 'undefined') {
+  pubKey = getPublicKey(secretPhrase)
+} else {
+  pubKey = publicKey
+}
+let m = {
+  t: 'dgs',
+  m: message
+}
+document.getElementById('message').innerText = ""
+const params = new URLSearchParams({
+  requestType: 'getAccountPublicKey',
+  account: otherAccount
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+  const errorDescription = data.errorDescription
+    if(!errorDescription) { 
+      const recipientPublicKey = data.publicKey
+      var x = encryptMessage(JSON.stringify(m), secretPhrase, recipientPublicKey)
+      const params2 = new URLSearchParams({
+        requestType: 'sendMessage',
+        recipient: otherAccount,
+        publicKey: pubKey,
+        encryptedMessageData: x.encryptedMessageData,
+        encryptedMessageNonce: x.encryptedMessageNonce,
+        encryptedMessageIsText: true,
+        encryptedMessageIsPrunable: true,
+        feeNQT: 0,
+        deadline: 60,
+        broadcast: false
+      })
+      fetch(apiURL + params2, {method: 'POST'})
+      .then((response) => response.json())
+      .then((data2) => { 
+        const errorDescription2 = data2.errorDescription
+        if(!errorDescription2) {
+          const txJSON = data2.transactionJSON
+          const unsignedTxBytes = data2.unsignedTransactionBytes
+          const signedTx = sign(unsignedTxBytes, secretPhrase)
+          const signature = signedTx.signature
+          txJSON.signature = signature
+          const params3 = new URLSearchParams({
+            requestType: 'broadcastTransaction',
+            transactionJSON: JSON.stringify(txJSON)
+          })
+          fetch(apiURL + params3, {method: 'POST'})
+          .then((response) => response.json())
+          .then((data3) => { 
+            const errorDescription3 = data3.errorDescription
+            if(!errorDescription3) {
+              const z = data3.transaction
+              checkMessage(z)
+            } else {
+              console.log(errorDescription3)
+              document.getElementById("sendBtnSpin").classList.add("hidden")
+              document.getElementById("sendBtnArrow").classList.remove("hidden")
+              document.getElementById('message').setAttribute("contenteditable", true)
+            }
+          })
+        } else {
+          console.log(errorDescription2)
+          document.getElementById("sendBtnSpin").classList.add("hidden")
+          document.getElementById("sendBtnArrow").classList.remove("hidden")
+          document.getElementById('message').setAttribute("contenteditable", true)
+        }
+      })
+    } else {
+      console.log(errorDescription)
+      document.getElementById("sendBtnSpin").classList.add("hidden")
+      document.getElementById("sendBtnArrow").classList.remove("hidden")
+      document.getElementById('message').setAttribute("contenteditable", true)
+}})}
+
+
+function checkMessage(tx) {
+var timer
+const params = new URLSearchParams({
+  requestType: 'getBlockchainTransactions',
+  account: account,
+  nonPhasedOnly: true,
+  lastIndex: 0
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+const error = data.errorDescription
+const transactions = data.transactions
+if(!error && transactions[0].transaction == tx) {
+getMessages()
+document.getElementById("sendBtnSpin").classList.add("hidden")
+document.getElementById("sendBtnArrow").classList.remove("hidden")
+document.getElementById("message").innerHTML ='<span id="placeholder" class="text-gray-500">Send message...</span>'
+document.getElementById('message').setAttribute("contenteditable", true)
+clearTimeout(timer)
+return
+} else {
+timer = setTimeout(function(){checkMessage(tx)}, 600)
+}})}
+
+
+
+function handle(e){
+ var key = e.keyCode || e.which
+  if (key == 13){
+    e.preventDefault()
+    document.getElementById("sendBtn").click()
+  }
+}
+
+function play() {
+let audio = new Audio('../../img/notify.wav')
+audio.play()
+}
+
+function removePlaceholder() {
+document.getElementById('placeholder').classList.add("hidden")
+}
+</script>
+</body>
+</html>

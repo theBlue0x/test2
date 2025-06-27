@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Together. We Are the Bank.">
+<link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="stylesheet" href="../css/styles.css">
+<title>Blue0x</title>
+</head>
+<body class="flex min-h-screen flex-col antialiased tracking-tight leading-tight text-gray-200 bg-[#0A0A0A] p-4 md:p-8">
+
+	<nav class="top-0 z-20 w-full h-16 bg-transparent md:px-6">
+	    <div class="flex justify-between items-center">
+		    <div class="flex items-center">
+		    	<h1 class="text-2xl font-semibold">All Transactions</h1>
+		    </div>
+		    <div class="flex">
+		       	<button type="button" class="cursor-default btn-top" id="account_nav"></button>
+		    </div>
+	    </div>
+  	</nav>
+
+  	<div class="flex flex-col md:px-6">
+  		<div class="overflow-x-hidden relative py-4 px-3 mt-4 rounded-lg border md:px-6 border-neutral-800">
+  			<h2 class="flex justify-between pl-1 pb-3 text-lg font-medium md:pl-0"> <span class="text-sm text-blue-500 cursor-pointer" onclick="window.location.href='../dashboard'"><< Go Back</span></h2>
+  			<table class="w-full text-sm text-left table-fixed rtl:text-right">
+  				<thead class="text-sm text-gray-300">
+  					<tr>
+  						<th scope="col" class="hidden py-1 pl-2 md:table-cell md:w-1/5">
+  							Date
+  						</th>
+  						<th scope="col" class="hidden py-1 pl-2 md:table-cell md:w-1/5">
+  							Type
+  						</th>
+  						<th scope="col" class="hidden py-1 pl-2 md:table-cell md:w-1/5">
+  							Amount
+  						</th>
+  						<th scope="col" class="hidden py-1 pl-2 md:table-cell md:w-1/4">
+  							Account
+  						</th>
+  						<th scope="col" class="hidden py-1 px-2 text-right md:table-cell md:w-1/5">
+  							Status
+  						</th>
+  					</tr>
+  				</thead>
+  				<tbody class="font-medium text-gray-300/95" id="pendingBody"></tbody>
+  				<tbody class="font-medium text-gray-300/95" id="completedBody">
+          <tr>
+              <td id="noTxMobile" class="py-12 px-3 text-center text-gray-300 md:hidden"><img class="animate-spin icon" src="../img/loader.svg"></td>
+              <td class="hidden py-1.5 px-8 text-center md:table-cell"></td>
+              <td class="hidden py-1.5 px-8 text-center md:table-cell"></td>
+              <td id="noTxDesktop" class="hidden py-16 font-normal text-center md:table-cell text-gray-300/80"><img class="ml-1 animate-spin icon" src="../img/loader.svg"></td>
+              <td class="hidden py-1.5 px-8 text-center md:table-cell"></td>
+              <td class="hidden py-1.5 px-8 text-center md:table-cell"></td>
+            </tr>    
+          </tbody>
+  			</table>
+  		</div>
+  		<div class="py-6 space-x-2">
+  			<button onclick="window.location.href='../dashboard'" class="py-2.5 px-3 w-28 text-lg font-medium text-white bg-blue-700 rounded-lg cursor-pointer md:text-base hover:bg-blue-700/90">Go Back</button>
+  		</div>
+  	</div>
+  	
+<script src="../js/constants.js"></script>
+<script src="../js/transactionTypes.js"></script>
+<script src="../js/assetIds.js"></script>
+<script>
+const account = sessionStorage.getItem('account')
+const last = sessionStorage.getItem('last')
+document.getElementById('account_nav').innerText = 'BLX ... ' + last
+const currency = localStorage.getItem("currency")
+sessionStorage.removeItem('inactivity')
+
+
+function completedTransactions() {
+const params = new URLSearchParams({
+  requestType: 'getBlockchainTransactions',
+  account: account,
+  nonPhasedOnly: true
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+  let rows = ''
+  const transactions = data.transactions
+  if(transactions.length == 0) {
+    document.getElementById('noTxMobile').innerText = "No transactions."
+    document.getElementById('noTxDesktop').innerText = "No transactions."
+  }
+  for (var i = 0; i < transactions.length; i++) {
+    const timestamp = transactions[i].timestamp
+    const transaction = transactions[i].transaction
+    const fee = transactions[i].feeNQT / 100000000
+    const date = getDate(timestamp)
+    const type = transactions[i].type
+    const subtype = transactions[i].subtype
+    const sortedType = transactionTypes[type].subTypes[subtype].name
+    let recipient = transactions[i].recipientRS
+    if(!recipient) {recipient = 'BLX-CHAIN-OPERATION'}
+    let amount = ''
+    if(type == 2) { amount = transactions[i].attachment.quantityQNT / 100 } 
+    if(type != 2) { amount = transactions[i].amountNQT / 100000000 }
+    let asset = ''
+    let assetCode = ''
+    if(type == 2 && subtype == 1 || subtype == 2 || subtype == 3) {
+      asset = transactions[i].attachment.asset
+      assetCode = assetIds[asset].code
+    }
+    let sender = transactions[i].senderRS
+    let direction = ''
+    let amountColor = ''
+    let total = ''
+    if(recipient == account){
+      direction = sender + '<span class="font-semibold text-green-500"> &#8627;</span> You'   
+      amountColor = '<span class="text-green-500">+ ' + amount.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</span>'
+    }
+    if(sender == account) {
+      total = amount + fee
+      direction = 'You <span class="font-semibold text-red-500">&#8627;</span> ' + recipient
+      amountColor = '<span class="text-red-500">-&nbsp;&nbsp;' + total.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</span>'
+    }
+    if(sender == account && type == 1 && subtype == 0) {
+      direction = 'You <span class="font-semibold text-red-500">&#8627;</span> ' + recipient
+      amountColor = '<span class="text-red-500">-&nbsp;&nbsp;' + fee.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</span>'
+    }
+    if(sender == account && type == 2 && (subtype == 0 || subtype == 2 || subtype == 3 || subtype == 4 || subtype == 5 )) {
+      direction = 'You <span class="font-semibold text-red-500">&#8627;</span>' + recipient
+      amountColor = '<span class="text-red-500">-&nbsp;&nbsp;' + fee.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</span>'
+    }
+    
+    rows += '<tr>'
+    rows += '<td class="py-1.5 pr-3 pl-2 w-1/2 text-left md:hidden">' + assetCode + ' ' + sortedType + '<br/><span class="cursor-pointer text-blue-500/70" data-modal-trigger aria-controls="txDetails" aria-expanded="false" onclick="showTxDetails(' + transaction + 'n)">' + date + '</span></td>'
+    rows += '<td class="py-1.5 pr-2 pl-3 w-1/2 text-right md:hidden">' + amountColor + '<br/>' + direction + '</td>'
+    rows += '<td class="hidden py-1 px-2 cursor-pointer md:table-cell text-blue-500/90" data-modal-trigger aria-controls="txDetails" aria-expanded="false" onclick="showTxDetails(' + transaction + 'n)">' + date + '</td>'
+    rows += '<td class="hidden py-1 px-2 md:table-cell">' + assetCode + ' ' + sortedType + '</td>'
+    rows += '<td class="hidden py-1 px-2 md:table-cell">' + amountColor + '</td>'
+    rows += '<td class="hidden py-1 px-2 md:table-cell">' + direction + '</td>'
+    rows += '<td class="hidden py-1 px-2 text-right md:table-cell">Completed</td>'
+    rows += '</tr>'
+    document.getElementById('completedBody').innerHTML = rows
+}})}
+
+setInterval(completedTransactions, 2000)
+
+var timeoutTimer;
+var expireTime = 1000*60*8
+function expireSession(){
+clearTimeout(timeoutTimer)
+timeoutTimer = setTimeout("IdleTimeout()", expireTime)
+}
+function IdleTimeout() {
+sessionStorage.clear()
+sessionStorage.setItem("inactivity", true)
+window.location.replace('../')
+}
+document.addEventListener("click", expireSession, false);
+document.addEventListener("keypress", expireSession, false);
+document.addEventListener("scroll", expireSession, false);
+expireSession()
+</script>
+</body>
+</html>

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="0xlist: the decentralized marketplace on the Blue0x blockchain">
+<title>0xlist: the decentralized marketplace on the Blue0x blockchain</title>
+<link rel="stylesheet" href="../../css/styles.css">
+<link rel="icon" type="image/x-icon" href="../../img/favicon.ico">
+</head>
+<body class="font-medium text-gray-700">
+<div class="pt-3 w-full h-12 bg-gray-100 border-b border-gray-300 truncate">
+<button class="px-2 ml-1 text-blue-600 bg-white rounded-full border border-gray-300 hover:underline" 
+	onclick="window.location.href='../index.html'">0x
+</button> 
+<span id="city" class="text-blue-600 cursor-pointer" onclick="backToCity()"></span> >
+<span id="type" class="text-blue-600 cursor-pointer" onclick="backToCity()"></span> >
+<span id="category" class="text-blue-600 cursor-pointer" onclick="backToCategory()"></span>
+</div>
+<div id="loader" class="flex h-[calc(60dvh)] justify-center items-center">
+  <img class="w-6 h-6 animate-spin" src="../../img/loader-black.svg">
+</div>
+<div id="page" class="hidden h-[calc(100dvh-85px)] mx-2 md:mx-48">
+	<div class="flex mx-auto mt-5 space-x-12 w-full h-10">
+		<button onclick="gotoReply()" class="py-1 px-2 w-20 text-lg bg-gray-200 hover:bg-purple-200 rounded-lg border border-gray-500">reply</button>
+		<button><img class="mx-auto" src="../../img/star.svg">favorite</button>
+		<button><img class="mx-auto" src="../../img/hide.svg">hide</button>
+		<button><img class="mx-auto" src="../../img/share.svg">share</button>
+	</div>
+
+	<div class="flex mt-5 h-6">
+    <h2 id="seller" class="font-semibold"></h2><span id="feedbackCount"></span>
+  </div>
+
+	<div class="flex mt-1">
+    <h2 id="title" class="text-xl font-bold"></h2>
+  </div>
+
+  <div id="images" class="flex hidden mt-4">
+    <div class="flex overflow-x-hidden w-full h-[304px] md:max-w-[500px]">
+      <div id="img1Div" class="cursor-pointer carousel-item">
+      	<a data-fslightbox="gallery" id="img1Link" data-type="image">
+          <img id="img1" class="object-contain w-full h-[300px]">
+        </a>
+      </div>
+      <div id="img2Div" class="hidden cursor-pointer carousel-item">
+      	<a data-fslightbox="gallery" id="img2Link" data-type="image">
+          <img id="img2" class="object-contain w-full h-[300px]">
+        </a>
+      </div>
+      <div id="img3Div" class="hidden cursor-pointer carousel-item">
+      	<a data-fslightbox="gallery" id="img3Link" data-type="image">
+          <img id="img3" class="object-contain w-full h-[300px]">
+        </a>
+      </div>
+      <div id="img4Div" class="hidden cursor-pointer carousel-item">
+      	<a data-fslightbox="gallery" id="img4Link" data-type="image">
+          <img id="img4" class="object-contain w-full h-[300px]">
+        </a>
+      </div>
+		</div>
+  </div>
+
+  <div id="thumbs" class="flex hidden mt-2 ml-1">
+    <div class="flex overflow-x-hidden h-20 md:max-w-[500px]">
+      <div id="img1ThumbDiv" class="cursor-pointer" onclick="showThumb('img1Div')">
+          <img id="img1Thumb" class="object-contain ml-1 w-20 h-20">
+      </div>
+      <div id="img2ThumbDiv" class="hidden cursor-pointer" onclick="showThumb('img2Div')">
+          <img id="img2Thumb" class="object-contain ml-1 w-20 h-20">
+      </div>
+      <div id="img3ThumbDiv" class="hidden cursor-pointer" onclick="showThumb('img3Div')">
+          <img id="img3Thumb" class="object-contain ml-1 w-20 h-20">
+      </div>
+      <div id="img4ThumbDiv" class="hidden cursor-pointer" onclick="showThumb('img4Div')">
+          <img id="img4Thumb" class="object-contain ml-1 w-20 h-20">
+      </div>
+		</div>
+  </div>
+
+  <div class="mt-3.5">
+  	<p class="text-lg" id="description"></p>
+
+  	<p class="hidden pb-6 mt-6 ml-1 text-sm font-semibold md:block">Posted :&nbsp;<span class="font-normal" id="postedTime"></span>&emsp;Item :&nbsp;<span class="font-normal" id="itemNum"></span></p>
+    
+  	<p class="mt-4 text-sm font-semibold md:block md:hidden">Posted :&nbsp;<span class="font-normal" id="postedTimeM"></span></p>
+  	<p class="pb-6 mt-1 text-sm md:hidden">Item ID:&nbsp;<span class="font-normal" id="itemNumM"></span></p>
+  </div>
+
+</div>
+<script src="../../js/constants.js"></script>
+<script src="../../js/lightbox.min.js"></script>
+<script>
+const queryString = window.location.search
+const urlParams = new URLSearchParams(queryString)
+const city = urlParams.get("city")
+const currency = urlParams.get("currency")
+document.getElementById("city").innerText = city
+const type = urlParams.get("section")
+let t = ''
+if(type == "forSale") {
+	t = "for sale"
+} else {
+  t = type
+}
+document.getElementById("type").innerText = t
+
+const category = urlParams.get("category")
+let c = ''
+if(category == "free"){
+	c = "free stuff"
+} else {
+  c = category
+}
+document.getElementById("category").innerText = c
+
+const item = urlParams.get("item")
+
+const params = new URLSearchParams({
+  requestType: 'getDGSGood',
+  goods: item
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+const seller = data.sellerRS
+document.getElementById("seller").innerText = seller
+const title = data.name
+const x = JSON.parse(data.description)
+const description = x.d
+const neighborhood = x.neighborhood
+const price = x.price
+document.getElementById("title").innerText = title + ' - $' + price + ' (' + neighborhood + ')'
+document.getElementById("description").innerText = description
+const img1 = x.img1
+const img2 = x.img2
+const img3 = x.img3
+const img4 = x.img4
+if(img1 != "") {
+document.getElementById("images").classList.remove("hidden")
+document.getElementById("thumbs").classList.remove("hidden")
+document.getElementById("img1").src = img1
+document.getElementById("img1Thumb").src = img1
+document.getElementById("img1Link").href = img1
+}
+if(img2 != "") {
+document.getElementById("img2").src = img2
+document.getElementById("img2ThumbDiv").classList.remove("hidden")
+document.getElementById("img2Thumb").src = img2
+document.getElementById("img2Link").href = img2
+}
+if(img3 != "") {
+document.getElementById("img3").src = img3
+document.getElementById("img3ThumbDiv").classList.remove("hidden")
+document.getElementById("img3Thumb").src = img3
+document.getElementById("img3Link").href = img3
+}
+if(img4 != "") {
+document.getElementById("img4").src = img4
+document.getElementById("img4ThumbDiv").classList.remove("hidden")
+document.getElementById("img4Thumb").src = img4
+document.getElementById("img4Link").href = img4
+}
+if(img1 == "" && img2 == "" && img3 == "" && img4 == "") {
+document.getElementById("images").classList.remove("hidden")
+document.getElementById("img1").src = "../../img/no-image.jpg"
+}
+refreshFsLightbox()
+const timestamp = data.timestamp
+const date = getDate(timestamp)
+document.getElementById("postedTime").innerText = date
+document.getElementById("postedTimeM").innerText = date
+document.getElementById("itemNum").innerText = item
+document.getElementById("itemNumM").innerText = item
+document.getElementById("loader").classList.add("hidden")
+document.getElementById("page").classList.remove("hidden")
+})
+
+function showThumb(imgDiv) {
+const images = document.getElementsByClassName("carousel-item cursor-pointer")
+for (var i = 0; i < images.length; i++) {
+	images[i].classList.add("hidden")
+	document.getElementById(imgDiv).classList.remove("hidden")
+}}
+
+function gotoReply() {
+window.location.href = '../reply/?currency='+ currency + '&city=' + city + '&item=' + item
+}
+
+function backToCategory() {
+  window.location.href = '../search/?currency=' + currency + '&city=' + city + '&section=' + type + '&category=' + category
+}
+
+function backToCity() {
+  window.location.href = '../city/?currency=' + currency + '&city=' + city
+}
+</script>
+</body>
+</html>

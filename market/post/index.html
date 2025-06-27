@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="0xlist: the decentralized marketplace on the Blue0x blockchain">
+<title>0xlist: the decentralized marketplace on the Blue0x blockchain</title>
+<link rel="stylesheet" href="../../css/styles.css">
+<link rel="icon" type="image/x-icon" href="../../img/favicon.ico">
+</head>
+<body class="font-medium">
+<div class="pt-3 w-full h-12 bg-gray-100 border-b border-gray-300 truncate">
+	<button class="px-2 ml-1 text-blue-600 bg-white rounded-full border border-gray-300 hover:underline" 
+		onclick="window.location.href='../index.html'">0x</button> <span id="city" onclick="backtoCity()"></span> <span id="caret1" class="hidden"> > </span> 
+		<span onclick="backtoCategories()" id="type"></span> <span id="caret2" class="hidden"> > </span> <span id="category"></span>
+</div>
+<div class="pt-6 pl-8 w-full bg-white md:pt-12 md:pl-40" id="types">
+	<h2 class="pb-3 ml-4 font-semibold">what type of posting is this:</h2>
+
+	<input type="radio" name="radio" id="for sale" value="for sale" class="mb-4 ml-8 cursor-pointer type">
+	<label for="for sale" class="labelM">for sale by owner</label><br>
+
+	<input type="radio" name="radio" id="wanted to buy" value="wanted to buy" class="mb-9 ml-8 cursor-pointer type">
+	<label for="wanted to buy" class="labelM">wanted to buy</label><br>
+
+	<input type="radio" name="radio" id="job offered" value="job offered" class="mb-4 ml-8 cursor-pointer type">
+	<label for="job offered" class="labelM">job offered</label><br>
+
+	<input type="radio" name="radio" id="service offered" value="service offered" class="mb-9 ml-8 cursor-pointer type">
+	<label for="service offered" class="labelM">service offered</label><br>
+
+	<input type="radio" name="radio" id="housing offered" value="housing offered" class="mb-4 ml-8 cursor-pointer type">
+	<label for="housing offered" class="labelM">housing offered</label><br>
+
+	<input type="radio" name="radio" id="housing wanted" value="housing wanted" class="mb-9 ml-8 cursor-pointer type">
+	<label for="housing wanted" class="labelM">housing wanted</label><br>
+
+	<input type="radio" name="radio" id="com" value="community" class="mb-4 ml-8 cursor-pointer type">
+	<label for="com" class="labelM">community</label><br>
+</div>
+
+<div class="hidden subDiv" id="forSale">
+	<span class="font-semibold">please choose a category:</span>
+	<div class="md:flex md:justify-center">
+		<div class="col">
+			<label for="antiques" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="antiques" value="antiques" >antiques
+			</label>
+
+			<label for="appliances" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="appliances" value="appliances" >appliances
+			</label>
+
+			<label for="arts & crafts" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="arts & crafts" value="arts & crafts">arts/crafts
+			</label>
+
+			<label for="atvs / snowmobiles" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="atvs / snowmobiles" value="atvs / snowmobiles">atvs/snow
+			</label>
+
+			<label for="auto parts" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="auto parts" value="auto parts">auto parts
+			</label>
+
+			<label for="aviation" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="aviation" value="aviation">aviation
+			</label>
+
+			<label for="baby & kids" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="baby & kids" value="baby & kids">baby/kids
+			</label>
+
+			<label for="barter" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="barter" value="barter">barter
+			</label>
+
+			<label for="beauty" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="beauty" value="beauty">beauty
+			</label>
+
+			<label for="bike parts" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="bike parts" value="bike parts">bike parts
+			</label>
+
+			<label for="boat parts" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="boat parts" value="boat parts">boat parts
+			</label>
+		</div>
+
+		<div class="col">
+			<label for="boats" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="boats" value="boats">boats
+			</label>
+
+			<label for="books" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="books" value="books">books
+			</label>
+
+			<label for="business" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="business" value="business">business
+			</label>
+
+			<label for="cars & trucks" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="cars & trucks" value="cars & trucks">cars/trucks
+			</label>
+
+			<label for="cd /  dvd /  vhs" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="cd /  dvd /  vhs" value="cd /  dvd /  vhs">cd/dvd/vhs
+			</label>
+
+			<label for="cell phones" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="cell phones" value="cell phones">cell phones
+			</label>
+
+			<label for="clothes" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="clothes" value="clothes">clothes
+			</label>
+
+			<label for="collectibles" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="collectibles" value="collectibles">collectibles
+			</label>
+
+			<label for="computers" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="computers" value="computers">computers
+			</label>
+
+			<label for="electronics" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="electronics" value="electronics">electronics
+			</label>
+
+			<label for="farm & garden" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="farm & garden" value="farm & garden">farm/garden
+			</label>
+		</div>
+
+		<div class="col">
+			<label for="free" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="free" value="free">free
+			</label>
+
+			<label for="furniture" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="furniture" value="furniture">furniture
+			</label>
+
+			<label for="garage sales" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="garage sales" value="garage sales">garage sales
+			</label>
+
+			<label for="general" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="general" value="general">general
+			</label>
+
+			<label for="heavy equip" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="heavy equip" value="heavy equip">heavy equip
+			</label>
+
+			<label for="household" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="household" value="household">household
+			</label>
+
+			<label for="jewelry" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="jewelry" value="jewelry">jewelry
+			</label>
+
+			<label for="materials" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="materials" value="materials">materials
+			</label>
+
+			<label for="motorcycles" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="motorcycles" value="motorcycles">motorcycles
+			</label>
+
+			<label for="musical instruments" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="musical instruments" value="musical instruments">musical instr
+			</label>
+		</div>
+
+		<div class="col">
+
+			<label for="photography & film" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="photography & film" value="photography & film">photography/film
+			</label>
+
+			<label for="rvs & campers" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="rvs & campers" value="rvs & campers">rvs/campers
+			</label>
+
+			<label for="sporting goods" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="sporting goods" value="sporting goods">sporting goods
+			</label>
+
+			<label for="tickets" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="tickets" value="tickets">tickets
+			</label>
+
+			<label for="tools" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="tools" value="tools">tools
+			</label>
+
+			<label for="toys & games" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="toys & games" value="toys & games">toys/games
+			</label>
+		
+			<label for="trailers" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="trailers" value="trailers">trailers
+			</label>
+
+			<label for="video gaming" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="video gaming" value="video gaming">video gaming
+			</label>
+
+			<label for="wheels & tires" class="mb-6 md:mb-0 labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="wheels & tires" value="wheels & tires">wheels/tires
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="hidden subDiv" id="jobs">
+	<span class="font-semibold">please choose a category:</span>
+	<div class="md:flex md:justify-center">
+		<div class="col">
+			<label for="accounting / finance" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="accounting / finance" value="accounting / finance">accounting / finance
+			</label>
+
+			<label for="admin / office" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="admin / office" value="admin / office">admin / office
+			</label>
+
+			<label for="architect / engineer / cad" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="architect / engineer / cad" value="architect / engineer / cad">architect / engineer / cad
+			</label>
+
+			<label for="art / media / design" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="art / media / design" value="art / media / design">art / media / design
+			</label> 
+
+			<label for="biotech / science" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="biotech / science" value="biotech / science">biotech / science
+			</label>
+
+			<label for="business / mgmt" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="business / mgmt" value="business / mgmt">business / mgmt
+			</label>
+
+			<label for="customer service" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="customer service" value="customer service">customer service
+			</label>
+
+			<label for="education / teaching" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="education / teaching" value="education / teaching">education / teaching
+			</label>
+
+			<label for="food / beverage / hospitality" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="food / beverage / hospitality" value="food / beverage / hospitality">food / beverage / hospitality
+			</label>
+
+			<label for="general labor" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="general labor" value="general labor">general labor
+			</label>
+
+			<label for="government" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="government" value="government">government
+			</label>
+		</div>
+
+		<div class="col">
+			<label for="human resource" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="human resource" value="human resource">human resource
+			</label>
+
+			<label for="legal / paralegal" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="legal / paralegal" value="legal / paralegal">legal / paralegal
+			</label>
+
+			<label for="manufacturing" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="manufacturing" value="manufacturing">manufacturing
+			</label>
+
+			<label for="marketing / advertising" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="marketing / advertising" value="marketing / advertising">marketing / advertising
+			</label>
+
+			<label for="medical / healthcare" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="medical / healthcare" value="medical / healthcare">medical / healthcare
+			</label>
+
+			<label for="nonprofit" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="nonprofit" value="nonprofit">nonprofit
+			</label>
+
+			<label for="real estate" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="real estate" value="real estate">real estate
+			</label>
+
+			<label for="retail / wholesale" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="retail / wholesale" value="retail / wholesale">retail / wholesale
+			</label>
+
+			<label for="sales" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="sales" value="sales">sales
+			</label>
+
+			<label for="salon / spa / fitness" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="salon / spa / fitness" value="salon / spa / fitness">salon / spa / fitness
+			</label>
+
+			<label for="security" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="security" value="security">security
+			</label>
+		</div>
+
+		<div class="col">
+			<label for="skilled trades / artisan" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="skilled trades / artisan" value="skilled trades / artisan">skilled trades / artisan
+			</label>
+
+			<label for="software / qa / dba" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="software / qa / dba" value="software / qa / dba">software / qa / dba
+			</label>
+
+			<label for="systems / networking" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="systems / networking" value="systems / networking">systems / networking
+			</label>
+
+			<label for="technical support" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="technical support" value="technical support">technical support
+			</label>
+
+			<label for="transportation" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="transportation" value="transportation">transportation
+			</label>
+
+			<label for="tv / film / video / radio" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="tv / film / video / radio" value="tv / film / video / radio">tv / film / video / radio
+			</label>
+
+			<label for="web / html / info design" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="web / html / info design" value="web / html / info design">web / html / info design
+			</label>
+
+			<label for="writing / editing" class="labelM">
+				<input type="radio" name="radio2" class="checkbox job" id="writing / editing" value="writing / editing">writing / editing
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="hidden subDiv" id="service">
+	<span class="font-semibold">please choose a category:</span>
+	<div class="md:flex md:justify-center">
+		<div class="col">
+			<label for="automotive services" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="automotive services" value="automotive services">automotive services
+			</label>
+
+			<label for="beauty services" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="beauty services" value="beauty services">beauty services
+			</label>
+
+			<label for="computer services" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="computer services" value="computer services">computer services
+			</label>
+
+			<label for="creative services" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="creative services" value="creative services">creative services
+			</label>
+
+			<label for="farm & garden services" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="farm & garden services" value="farm & garden services">farm & garden services
+			</label>
+
+			<label for="financial services" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="financial services" value="financial services">financial services
+			</label>
+
+			<label for="health & wellness services" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="health & wellness services" value="health & wellness services">health & wellness services
+			</label>
+
+			<label for="household services" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="household services" value="household services">household services
+			</label>
+		</div>
+
+		<div class="col">
+			<label for="labor /  hauling /  moving" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="labor /  hauling /  moving" value="labor /  hauling /  moving">labor /  hauling /  moving
+			</label>
+
+			<label for="legal services" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="legal services" value="legal services">legal services
+			</label>
+
+			<label for="marine services" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="marine services" value="marine services">marine services
+			</label>
+
+			<label for="pet services" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="pet services" value="pet services">pet services
+			</label>
+
+			<label for="real estate services" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="real estate services" value="real estate services">real estate services
+			</label>
+
+			<label for="skilled trade services" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="skilled trade services" value="skilled trade services">skilled trade services
+			</label>
+
+			<label for="writing /  editing /  translation" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="writing /  editing /  translation" value="writing /  editing /  translation">writing /  editing /  translation
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="hidden subDiv" id="housing">
+	<span class="font-semibold">please choose a category:</span>
+	<div class="md:flex md:justify-center">
+		<div class="col">
+			<label for="rooms & shares" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="rooms & shares" value="rooms & shares">rooms & shares
+			</label>
+
+			<label for="apartments /  housing for rent" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="apartments /  housing for rent" value="apartments /  housing for rent">apartments /  housing for rent
+			</label>
+
+			<label for="office & commercial" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="office & commercial" value="office & commercial">office & commercial
+			</label>
+
+			<label for="parking & storage" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="parking & storage" value="parking & storage">parking & storage
+			</label>
+
+			<label for="real estate - by broker" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="real estate - by broker" value="real estate - by broker">real estate - by broker
+			</label>
+
+			<label for="real estate - by owner" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="real estate - by owner" value="real estate - by owner">real estate - by owner
+			</label>
+
+			<label for="sublets & temporary" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="sublets & temporary" value="sublets & temporary">sublets & temporary
+			</label>
+
+			<label for="vacation rentals" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="vacation rentals" value="vacation rentals">vacation rentals
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="hidden subDiv" id="housingWanted">
+	<span class="font-semibold">please choose a category:</span>
+	<div class="md:flex md:justify-center">
+		<div class="col">
+			<label for="wanted: apartments" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="wanted: apartments" value="wanted: apartments">wanted: apartments
+			</label>
+
+			<label for="wanted: rooms & shares" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="wanted: rooms & shares" value="wanted: rooms & shares">wanted: rooms & shares
+			</label>
+
+			<label for="wanted: real estate" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="wanted: real estate" value="wanted: real estate">wanted: real estate
+			</label>
+
+			<label for="wanted: sublets /  temp" class="labelM">
+				<input type="radio" name="radio2" class="checkbox notJob" id="wanted: sublets /  temp" value="wanted: sublets /  temp">wanted: sublets /  temp
+			</label>
+		</div>
+	</div>
+</div>
+
+
+<div class="hidden ml-12 subDiv" id="community">
+	<span class="font-semibold">please choose a category:</span>
+	<div class="md:flex md:justify-center">
+		<div class="col">
+			<label for="activities" class="labelM">
+				<input type="radio" name="radio2" class="checkbox comm" id="activities" value="activities">activities
+			</label>
+
+			<label for="artists" class="labelM">
+				<input type="radio" name="radio2" class="checkbox comm" id="artists" value="artists">artists
+			</label>
+
+			<label for="classes" class="labelM">
+				<input type="radio" name="radio2" class="checkbox comm" id="classes" value="classes">classes
+			</label>
+
+			<label for="events" class="labelM">
+				<input type="radio" name="radio2" class="checkbox comm" id="events" value="events">events
+			</label>
+
+			<label for="musicians" class="labelM">
+				<input type="radio" name="radio2" class="checkbox comm" id="musicians" value="musicians">musicians
+			</label>
+
+			<label for="volunteers" class="labelM">
+				<input type="radio" name="radio2" class="checkbox comm" id="volunteers" value="volunteers">volunteers
+			</label>
+		</div>
+	</div>
+</div>
+
+<div class="hidden w-full h-screen bg-white md:p-2 lg:px-32" id="jobsDiv">
+	<form id="jobsForm" class="flex flex-col justify-center w-full">
+		<div class="flex flex-col justify-between w-full md:flex-row">
+
+			<div class="py-2 px-4">
+		  		<label for="postTitleJobs" class="text-sm font-semibold">posting title</label><br>
+		  		<input type="text" required id="postTitleJobs" name="postTitleJobs" class="py-1 px-2 w-full rounded-lg border border-gray-400 xl:w-80">
+		  	</div>
+
+		  	<div class="py-2 px-4">
+		  		<label for="cityJobs" class="text-sm font-semibold">city or neighborhood</label><br>
+		  		<input type="text" required id="cityJobs" name="cityJobs" class="py-1 px-2 w-full rounded-lg border border-gray-400 xl:w-80">
+		  	</div>
+
+		  	<div class="py-2 px-4">
+		  		<label for="zipJobs" class="text-sm font-semibold">ZIP code</label><br>
+		  		<input type="text" required id="zipJobs" name="zipJobs" class="py-1 px-2 rounded-lg border border-gray-400">
+		  	</div>
+
+		</div>
+
+		<div class="w-full">
+			<div class="py-2 px-4 w-full">
+		  		<label for="descriptionJobs" class="text-sm font-semibold">description</label><br>
+		  		<textarea id="descriptionJobs" rows="6" name="descriptionJobs" class="py-1 px-2 w-full rounded-lg border border-gray-400"></textarea>
+		  	</div>
+		  	<div class="py-2 px-4 w-full">
+			  	<label for="employType" class="text-sm font-semibold">employment type</label><br>
+			  		<select id="employType" class="py-1 px-2 w-full bg-white rounded-lg border border-gray-400 md:w-2/5">
+					    <option selected>select one </option>
+					    <option value="full-time">full-time</option>
+					    <option value="part-time">part-time</option>
+					    <option value="contract">contract</option>
+					    <option value="internship">internship</option>
+					</select>
+		  	</div>
+		</div>
+
+		<div class="py-2 px-4">
+		  	<label for="titleJobs" class="text-sm font-semibold">job title</label><br>
+		  	<input type="text" required id="titleJobs" name="titleJobs" class="py-1 px-2 w-full rounded-lg border border-gray-400">
+		</div>
+
+		<div class="py-2 px-4">
+		  	<label for="compJobs" class="text-sm font-semibold">compensation</label><br>
+		  	<input type="text" required id="compJobs" name="compJobs" class="py-1 px-2 w-full rounded-lg border border-gray-400">
+		</div>
+
+		<div class="py-2 px-4">
+		  	<label for="companyJobs" class="text-sm font-semibold">company name</label><br>
+		  	<input type="text" required id="companyJobs" name="companyJobs" class="py-1 px-2 w-full rounded-lg border border-gray-400">
+		</div>
+
+		<!--<div class="w-full">
+		  	<div class="py-2 px-4 w-full">
+		  		<label class="text-sm font-semibold">contact info</label><br>
+		  		<div class="relative py-1 px-2 h-auto bg-gray-100 rounded-lg border border-gray-400 md:h-52">
+			  		<div class="w-full md:w-1/2">
+			  			<div class="px-8 pt-4 pb-2">
+				  			<label for="emailJobs" class="text-sm font-semibold">email</label><br>
+				  			<input type="text" id="emailJobs" name="emailJobs" class="py-1 px-2 rounded-lg border border-gray-400" placeholder="your email address">
+			  			</div>
+
+			  			<div class="flex flex-col px-8 pt-2 pb-2">
+			  				<span class="text-sm font-semibold">email privacy options</span>
+			  				<label for="relay">
+								<input type="checkbox" class="mr-1" id="relay" value="relay">0x mail relay (recommended)
+							</label>
+
+							<label for="showEmail">
+								<input type="checkbox" class="mr-1" id="showEmail" value="showEmail">show my real email address
+							</label>
+
+							<label for="relocation">
+								<input type="checkbox" class="mr-1" id="relocation" value="relocation">no replies to this email
+							</label>
+			  			</div>
+		  			</div>
+		  			<div class="flex relative flex-col pb-6 mt-4 ml-2 w-4/5 md:float-right md:mr-4 md:-mt-40 md:w-3/5">
+		  				<div class="p-4 h-auto border border-gray-300 md:h-40">
+		  					<span class="absolute -mt-7 bg-gray-100">phone/text</span>
+
+		  					<div class="flex flex-col justify-between mt-2 w-full md:flex-row md:px-2 md:mt-4">
+			  					<label for="showPhoneJobs">
+									<input type="checkbox" class="mr-1" id="showPhoneJobs" value="showPhoneJobs">show my phone number
+								</label>
+
+								<label for="callsOKJobs">
+									<input type="checkbox" class="mr-1" id="callsOKForSale" value="callsOKForSale">phone call OK
+								</label>
+
+								<label for="textsOKJobs">
+									<input type="checkbox" class="mr-1" id="textsOKJobs" value="textsOKJobs">text/sms OK
+								</label>
+							</div>
+
+							<div class="mt-4 md:px-6">
+			  					<label for="phoneNumJobs" class="text-sm">phone number</label><br>
+								<input type="text" class="bg-gray-200 border border-gray-300" id="phoneNumJobs">
+							</div>
+		  				</div>
+					</div>
+		  		</div>
+		  	</div>
+		</div>
+
+		<div class="mb-6 w-full">
+		  	<div class="py-2 px-4 w-full">
+		  		<label class="text-sm font-semibold">location info</label><br>
+		  		<div class="relative py-1 px-2 pb-6 h-auto bg-gray-100 rounded-lg border border-gray-400 md:h-36">
+					<div class="flex flex-row px-6 mt-4">
+						<label for="showAddress">
+							<input type="checkbox" class="mr-1" id="showAddress" value="showAddress">show address
+						</label>
+					</div>
+
+					<div class="flex flex-col md:flex-row">
+						<div class="px-6 mt-2 md:mt-4">
+				  			<label for="streetJobs" class="text-sm">street</label><br>
+							<input type="text" class="bg-gray-200 border border-gray-300" id="streetJobs">
+						</div>
+
+						<div class="px-6 mt-2 md:mt-4">
+				  			<label for="cityaddressJobs" class="text-sm">city</label><br>
+							<input type="text" class="bg-gray-200 border border-gray-300" id="cityaddressJobs">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>-->
+
+		<div class="relative mt-4 mb-12">
+		<button class="absolute right-4 py-1 px-1 px-2 text-xl bg-gray-200 rounded-lg border border-gray-400">		continue
+		</button>
+		</div>
+	</form> 
+</div>
+
+<div class="hidden w-full h-screen bg-white md:px-2 md:pt-6 lg:px-36" id="forSaleDiv">
+	<form id="forSaleForm" class="flex flex-col justify-center w-full">
+		<div class="flex flex-col justify-between w-full md:flex-row">
+
+			<div class="py-2 px-4">
+		  		<label for="postTitleForSale" class="text-sm font-semibold">posting title</label><br>
+		  		<input type="text" required autocomplete="off" id="postTitleForSale" name="postTitleForSale" class="py-1 px-2 w-full rounded-lg border border-gray-400 xl:w-80">
+		  	</div>
+
+		  	<div class="py-2 px-4 md:px-2">
+		  		<label for="priceForSale" class="text-sm font-semibold">price</label><br>
+		  		<input type="text" required autocomplete="off" oninput="valid(this);valid2(this);" id="priceForSale" name="priceForSale" class="py-1 px-2 w-28 rounded-lg border border-gray-400" placeholder="$"><br>
+		  		<span id="priceError" class="text-xs text-red-500"></span>
+		  	</div>
+
+		  	<div class="py-2 px-4">
+		  		<label for="cityForSale" class="text-sm font-semibold">city or neighborhood</label><br>
+		  		<input type="text" required autocomplete="off" id="cityForSale" name="cityForSale" class="py-1 px-2 w-full rounded-lg border border-gray-400 xl:w-80 placeholder:px-2">
+		  	</div>
+
+		  	<div class="py-2 px-4">
+		  		<label for="zipForSale" class="text-sm font-semibold">zip code</label><br>
+		  		<input type="text" required autocomplete="off" id="zipForSale" name="zipForSale" class="py-1 px-2 rounded-lg border border-gray-400">
+		  	</div>
+
+		</div>
+
+		<div class="w-full">
+			<div class="py-2 px-4 w-full">
+		  		<label for="descriptionForSale" class="text-sm font-semibold">description</label><br>
+		  		<textarea id="descriptionForSale" required autocomplete="off" rows="6" name="descriptionForSale" class="py-1 px-2 w-full rounded-lg border border-gray-400"></textarea>
+
+		  	</div>
+		</div>
+
+		<div class="px-4 pt-2 text-sm font-semibold">image uploads</div><br>
+
+		<div class="flex flex-col justify-between px-4 -mt-4 space-y-6 w-full md:flex-row md:space-y-0 md:space-x-6">
+			<div id="img1Div" onclick="upload('img1')" class="flex justify-center items-center w-48 h-48 rounded-lg border border-gray-400 cursor-pointer">
+				<input id="img1" type="file" class="hidden">
+				<img id="img1Out" src="">
+				<img id="img1Plus" class="w-8 h-8" src="../../img/plus.svg">
+			</div>
+
+			<div id="img2Div" onclick="upload('img2')" class="flex justify-center items-center w-48 h-48 rounded-lg border border-gray-400 cursor-pointer">
+				<input id="img2" type="file" class="hidden">
+				<img id="img2Out" src="">
+				<img id="img2Plus" class="w-8 h-8" src="../../img/plus.svg">
+			</div>
+
+			<div id="img3Div" onclick="upload('img3')" class="flex justify-center items-center w-48 h-48 rounded-lg border border-gray-400 cursor-pointer">
+				<input id="img3" type="file" class="hidden">
+				<img id="img3Out" src="">
+				<img id="img3Plus" class="w-8 h-8" src="../../img/plus.svg">
+			</div>
+
+			<div id="img4Div" onclick="upload('img4')" class="flex justify-center items-center w-48 h-48 rounded-lg border border-gray-400 cursor-pointer">
+				<input id="img4" type="file" class="hidden">
+				<img id="img4Out" src="">
+				<img id="img4Plus" class="w-8 h-8" src="../../img/plus.svg">
+			</div>
+			
+		</div>
+
+		<div class="mt-4 w-full md:w-3/4">
+			<div class="py-2 px-4 w-full" onclick="getTotal()">
+		  		<label for="secretPhraseForSale" class="text-sm font-semibold">account secret phrase</label><br>
+		  		<input type="password" id="secretPhraseForSale" required autocomplete="off" name="secretPhraseForSale" class="py-1.5 px-2 w-full rounded-lg border border-gray-400">
+		  	</div>
+		</div>
+
+		<div id="costDiv" class="hidden my-2 mx-4">
+			<p>Transaction cost : <span id="cost" class="text-red-500/90 mb-1">0.000 BLX</span></p>
+		</div>
+
+		<div class="mb-1 mx-4">
+			<span class="text-sm text-gray-600">* logged in as <span id="account" class="text-gray-950"></span></span>
+		</div>
+
+		<div class="pb-4 mt-6 mb-4 ml-4">
+			<button id="forSalePostBtn" class="py-2 px-3 w-32 text-xl bg-gray-200 rounded-lg border border-gray-500">
+				continue
+			</button>
+			<button id="forSalePostBtnLoad" class="hidden py-2 px-3 w-32 text-xl bg-gray-200 rounded-lg border border-gray-500" disable>
+				loading...
+			</button>
+		</div>
+	</form> 
+</div>
+
+<div class="hidden w-full h-screen bg-white md:px-2 md:pt-6 lg:px-32" id="communityDiv">
+	<form id="communityForm" class="flex flex-col justify-center w-full">
+		<div class="flex flex-col justify-between w-full md:flex-row">
+
+			<div class="py-2 px-4">
+		  		<label for="postTitleComm" class="text-sm font-semibold">posting title</label><br>
+		  		<input type="text" required id="postTitleComm" name="postTitleComm" class="py-1 px-2 w-full rounded-lg border border-gray-400 xl:w-80">
+		  	</div>
+
+		  	<div class="py-2 px-4">
+		  		<label for="cityComm" class="text-sm font-semibold">city or neighborhood</label><br>
+		  		<input type="text" required id="cityComm" name="cityComm" class="py-1 px-2 w-full rounded-lg border border-gray-400 xl:w-80">
+		  	</div>
+
+		  	<div class="py-2 px-4">
+		  		<label for="zipComm" class="text-sm font-semibold">ZIP code</label><br>
+		  		<input type="text" required id="zipComm" name="zipComm" class="py-1 px-2 rounded-lg border border-gray-400">
+		  	</div>
+
+		</div>
+
+		<div class="w-full">
+			<div class="py-2 px-4 w-full">
+		  		<label for="descriptionComm" class="text-sm font-semibold">description</label><br>
+		  		<textarea id="descriptionComm" rows="6" name="descriptionComm" class="py-1 px-2 w-full rounded-lg border border-gray-400"></textarea>
+		  	</div>
+		</div>
+
+		<div class="mt-4 mb-8">
+			<button class="py-1 px-2 text-xl bg-gray-200 rounded-lg border border-gray-400">
+				continue
+			</button>
+		</div>
+	</form> 
+</div>
+
+
+
+
+
+
+<!-- POST UPLOAD -->
+<div class="hidden flex w-full h-[calc(100dvh-225px)] bg-white md:pt-6 md:px-2 lg:px-32 justify-center items-center" id="postResult">
+	<div class="text-xl max-w-[350px] h-15">
+
+		<p id="uploaded" class="mb-1 h-8"><img id="uploadedSpin" class="inline mr-1.5 mb-1 w-4 h-4 animate-spin" src="../../img/loader-black.svg"><img id="uploadedCheck" class="inline hidden mr-1.5 mb-1 w-6 h-6" src="../../img/check.svg">uploading post</p>
+
+		<p id="gettingId" class="invisible mb-1 h-8"><img id="idSpin" class="inline mr-1.5 mb-1 w-4 h-4 animate-spin" src="../../img/loader-black.svg"><img id="idCheck" class="inline hidden mr-1.5 mb-1 w-6 h-6" src="../../img/check.svg">confirming post</p>
+
+		<p id="finished" class="invisible mb-1 h-8"><img id="finishedCheck" class="inline mr-1.5 mb-1 w-6 h-6" src="../../img/check.svg">success!</p>
+
+		<div id="itemLink" class="invisible mt-8 ml-2">
+		<a id="link" class="py-2 px-5 text-xl bg-gray-200 rounded-lg border border-gray-400 cursor-pointer">view post</a>
+		</div>
+	</div>
+</div>
+
+<script src="../../js/constants.js"></script>
+<script src="../../js/cryptojs.min.js"></script>
+<script src="../../js/curve25519_.js"></script>
+<script>
+const account = sessionStorage.getItem('account')
+document.getElementById("account").innerHTML = account
+const queryString = window.location.search
+const urlParams = new URLSearchParams(queryString)
+const city = urlParams.get("city")
+document.getElementById("city").innerText = city
+const currency = urlParams.get("currency")
+const publicKey = sessionStorage.getItem('pubKey')
+const types = document.getElementsByClassName("type")
+for (var i = 0; i < types.length; i++) {
+types[i].addEventListener('click', function (e) {
+const type = e.target.value
+document.getElementById("city").classList.add("text-blue-800")
+document.getElementById("city").classList.add("cursor-pointer")
+document.getElementById("city").classList.add("hover:underline")
+document.getElementById("caret1").classList.remove("hidden")
+document.getElementById("type").innerText = type
+document.getElementById("types").classList.add("hidden")
+if(type == "for sale") {
+	document.getElementById("forSale").classList.remove("hidden")
+}
+if(type == "wanted to buy") {
+	document.getElementById("forSaleDiv").classList.remove("hidden")
+ }
+if(type == "job offered") {
+	document.getElementById("jobs").classList.remove("hidden")
+}
+if(type == "service offered") {
+	document.getElementById("service").classList.remove("hidden")
+}
+if(type == "housing offered") {
+	document.getElementById("housing").classList.remove("hidden")
+}
+if(type == "housing wanted") {
+	document.getElementById("housingWanted").classList.remove("hidden")
+}
+if(type == "community") {
+	document.getElementById("community").classList.remove("hidden")
+}})}
+
+
+const categories = document.getElementsByClassName("checkbox")
+for (var i = 0; i < categories.length; i++) {
+categories[i].addEventListener('click', function (e) {
+const category = e.target.value
+document.getElementById("type").classList.add("text-blue-800")
+document.getElementById("type").classList.add("cursor-pointer")
+document.getElementById("type").classList.add("hover:underline")
+document.getElementById("caret2").classList.remove("hidden")
+document.getElementById("category").innerText = category
+document.getElementById("types").classList.add("hidden")
+if(e.target.classList[1] == 'job'){
+	document.getElementById("jobsDiv").classList.remove("hidden")
+	window.scrollTo({top: 0})
+}
+if(e.target.classList[1] == 'notJob'){
+	document.getElementById("forSaleDiv").classList.remove("hidden")
+	window.scrollTo({top: 0})
+}
+if(e.target.classList[1] == 'comm'){
+	document.getElementById("communityDiv").classList.remove("hidden")
+	window.scrollTo({top: 0})
+}
+const subDivs = document.getElementsByClassName("subDiv")
+for (var i = 0; i < subDivs.length; i++) {
+subDivs[i].classList.add("hidden") 
+}
+})}
+
+function backtoCity() {
+window.location.href = '../city/?&currency=' + currency + '&city=' + city
+}
+
+function backtoCategories() {
+const type = document.getElementById("type").innerText
+document.getElementById("jobsDiv").classList.add("hidden")
+document.getElementById("forSaleDiv").classList.add("hidden")
+document.getElementById("communityDiv").classList.add("hidden")
+if(type == "for sale") {
+	document.getElementById("forSale").classList.remove("hidden")
+}
+if(type == "wanted to buy") {
+	document.getElementById("forSaleDiv").classList.remove("hidden")
+ }
+if(type == "job offered") {
+	document.getElementById("jobs").classList.remove("hidden")
+}
+if(type == "service offered") {
+	document.getElementById("service").classList.remove("hidden")
+}
+if(type == "housing offered") {
+	document.getElementById("housing").classList.remove("hidden")
+}
+if(type == "housing wanted") {
+	document.getElementById("housingWanted").classList.remove("hidden")
+}
+if(type == "community") {
+	document.getElementById("community").classList.remove("hidden")
+}}
+
+async function upload(img) {
+document.getElementById(img).click()
+document.getElementById(img).onchange = async function(event) {
+var imgDiv = img + "Div"
+var imgOut = img + "Out"
+var imgPlus = img + "Plus"
+document.getElementById(imgDiv).classList.remove("border")
+document.getElementById(imgPlus).classList.add("hidden")
+var output = document.getElementById(imgOut)
+output.src = URL.createObjectURL(event.target.files[0])
+output.onload = function() {
+URL.revokeObjectURL(output.src) // free memory
+}
+var reader = new FileReader()
+reader.onloadend = function() {
+const base64 = reader.result.substr(reader.result.indexOf(',') + 1)
+const data = {
+	img: base64
+}
+fetch('http://localhost:3000/imgUpload', {
+	method: 'POST',
+	headers: {'Content-Type': 'application/json'},
+	body: JSON.stringify(data)
+})
+.then((response) => response.json())
+.then((data) => {
+const url = data
+output.src = url
+})}
+reader.readAsDataURL(event.target.files[0])
+}}
+
+const form = document.getElementById('forSaleForm')
+form.addEventListener('submit', async function (e) { 
+e.preventDefault()
+document.getElementById("forSalePostBtn").classList.add("hidden")
+document.getElementById("forSalePostBtnLoad").classList.remove("hidden")
+const type = document.getElementById("type").innerText
+const category = document.getElementById("category").innerText
+const name = document.getElementById("postTitleForSale").value
+const price = document.getElementById("priceForSale").value
+const neighborhood = document.getElementById("cityForSale").value
+const zipCode = document.getElementById("zipForSale").value
+const description = document.getElementById("descriptionForSale").value
+const secretPhrase = document.getElementById("secretPhraseForSale").value
+let img1 = document.getElementById("img1Out").src
+if(img1.includes("/market/post/")) {img1 = ''}
+let img2 = document.getElementById("img2Out").src
+if(img2.includes("/market/post/")) {img2 = ''}
+let img3 = document.getElementById("img3Out").src
+if(img3.includes("/market/post/")) {img3 = ''}
+let img4 = document.getElementById("img4Out").src
+if(img4.includes("/market/post/")) {img4 = ''}
+const tags = {city, type, category}
+const descriptionJSON = {
+	d: description,
+	price: price,
+	neighborhood: neighborhood,
+	zipCode: zipCode,
+	img1: img1,
+	img2: img2,
+	img3: img3,
+	img4: img4
+}
+let pubKey = " "
+if(publicKey == 'undefined') {
+  pubKey = getPublicKey(secretPhrase)
+} else {
+  pubKey = publicKey
+}
+const params = new URLSearchParams({
+  requestType: 'dgsListing',
+  name: name,
+  description: JSON.stringify(descriptionJSON),
+  tags: JSON.stringify(tags),
+  quantity: 1,
+  priceNQT: 1000000,
+  publicKey: pubKey,
+  feeNQT: 0,
+  deadline: 60,
+  broadcast: false
+})
+fetch(apiURL + params, {method: 'POST'})
+.then((response) => response.json())
+.then((data) => {
+const unsignedTx = data.unsignedTransactionBytes
+const x = sign(unsignedTx, secretPhrase)
+document.getElementById("forSaleDiv").classList.add("hidden")
+document.getElementById("postResult").classList.remove("hidden")
+const y = x.payload
+const params2 = new URLSearchParams({
+  requestType: 'broadcastTransaction',
+  transactionBytes: y
+})
+fetch(apiURL + params2, {method: 'POST'})
+.then((response) => response.json())
+.then((data2) => { 
+const error = data2.errorDescription
+if(!error) {
+	const tx = data2.transaction
+	checkListing(tx, 0)
+} else {
+	console.log(error)
+}})})})
+
+function checkListing(tx, x) {
+var timer;
+let y = x
+y ++
+if(y == 2) {
+document.getElementById("uploadedSpin").classList.add("hidden")
+document.getElementById("uploadedCheck").classList.remove("hidden")
+document.getElementById("gettingId").classList.remove("invisible")
+}
+const params = new URLSearchParams({
+  requestType: 'getDGSGood',
+  goods: tx,
+  includeCounts: true
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+const error = data.errorDescription
+if(!error) {
+const t = JSON.parse(data.tags)
+const city2 = t.city
+let section2 = t.type
+if (section2 == 'for sale') {
+	section2 = 'forSale'
+}
+const category2 = t.category
+document.getElementById("uploadedSpin").classList.add("hidden")
+document.getElementById("uploadedCheck").classList.remove("hidden")
+document.getElementById("gettingId").classList.remove("invisible")
+document.getElementById("idSpin").classList.add("hidden")
+document.getElementById("idCheck").classList.remove("hidden")
+document.getElementById("finished").classList.remove("invisible")
+document.getElementById("itemLink").classList.remove("invisible")
+document.getElementById("link").setAttribute('href', '../item/?currency=' + currency + '&city=' + city2 + '&section=' + section2 + '&category=' + category2 + '&item=' + tx)
+clearTimeout(timer)
+return 
+} else {
+timer = setTimeout(function(){checkListing(tx, y)}, 1500)
+}})}
+
+//<-----TODO------>//
+// Fix broadcast //
+function getTotal() {
+const type = document.getElementById("type").innerText
+const category = document.getElementById("category").innerText
+const name = document.getElementById("postTitleForSale").value
+const price = document.getElementById("priceForSale").value
+const neighborhood = document.getElementById("cityForSale").value
+const zipCode = document.getElementById("zipForSale").value
+const description = document.getElementById("descriptionForSale").value
+const secretPhrase = document.getElementById("secretPhraseForSale").value
+let img1 = document.getElementById("img1Out").src
+if(img1.includes("/market/post/")) {img1 = ''}
+let img2 = document.getElementById("img2Out").src
+if(img2.includes("/market/post/")) {img2 = ''}
+let img3 = document.getElementById("img3Out").src
+if(img3.includes("/market/post/")) {img3 = ''}
+let img4 = document.getElementById("img4Out").src
+if(img4.includes("/market/post/")) {img4 = ''}
+const tags = {city, type, category}
+const descriptionJSON = {
+	d: description,
+	price: price,
+	neighborhood: neighborhood,
+	zipCode: zipCode,
+	img1: img1,
+	img2: img2,
+	img3: img3,
+	img4: img4
+}
+let pubKey = " "
+if(publicKey == 'undefined') {
+  pubKey = getPublicKey(secretPhrase)
+} else {
+  pubKey = publicKey
+}
+const params = new URLSearchParams({
+  requestType: 'dgsListing',
+  name: name,
+  description: JSON.stringify(descriptionJSON),
+  tags: JSON.stringify(tags),
+  quantity: 1,
+  priceNQT: 1000000,
+  publicKey: pubKey,
+  feeNQT: 10, /// Leave at 10 to create error to display total after API call
+  deadline: 60,
+  broadcast: false
+})
+fetch(apiURL + params, {method: 'POST'})
+.then((response) => response.json())
+.then((data) => {
+console.log(data)
+const cost = data.errorDescription.slice(51,56)
+document.getElementById("costDiv").classList.remove("hidden")
+document.getElementById("cost").innerText = cost + ' BLX'
+})}
+
+// 2 DECIMAL INPUT ONLY //
+function valid(e) {
+  var t = e.value
+  e.value = t.indexOf(".") >= 0 ? t.slice(0, t.indexOf(".") + 3) : t
+}
+// VALDIATE PRICE VALUE //
+function valid2(e) {
+document.getElementById("priceError").innerText = ""
+var t = e.value
+var regex = new RegExp(/(?=.*?\d)^\$?(([1-9]\d{0,2}(,\d{3})*)|\d+)?(\.\d{1,2})?$/)
+if(regex.test(t) == false) {
+document.getElementById("priceError").innerText = "enter a valid price"
+}}
+</script>
+</body>
+</html>

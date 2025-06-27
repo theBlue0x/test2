@@ -1,0 +1,2422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Together. We Are the Bank.">
+<link rel="shortcut icon" href="../img/favicon.ico">
+<link rel="stylesheet" href="../css/styles.css">
+<title>Blue0x</title>
+</head>
+<body class="flex min-h-screen flex-col antialiased tracking-tight leading-tight text-gray-200 bg-[#0A0A0A] p-4 md:p-8" onload="runAllExchanges()">
+
+  <nav class="top-0 z-50 w-full h-16 bg-transparent md:px-6">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center">
+        <h1 class="text-3xl font-semibold">Dashboard</h1>
+      </div>
+      <div class="flex">
+        <button onclick="openModal(event, 'actions_modal')" type="button" class="btn-top hover:bg-blue-700/95" id="account_nav"><img class="animate-spin icon" src="../img/loader.svg"></button>
+      </div>
+    </div>
+  </nav>
+
+  <ul class="z-50 flex items-center pt-2 pb-4 text-sm font-medium text-center text-gray-400 md:pt-0 md:pl-6">
+    <li class="p-1 rounded-l-lg focus-within:z-10 bg-slate-900">
+      <button onclick="showSection(event, 'overview'); clearAllExchanges();" class="py-1 px-2 tab-button active" id="overviewBtn">
+        Overview
+      </button>
+    </li>
+    <li class="p-1 -ml-2 focus-within:z-10 bg-slate-900">
+      <button onclick="showSection(event, 'market');clearAllExchanges();" class="py-1 px-2 tracking-wide tab-button">
+        Market
+      </button>
+    </li>
+    <li class="p-1 -ml-2 focus-within:z-10 bg-slate-900">
+      <button onclick="showSection(event, 'exchange');runAllExchanges();startInterval();" class="py-1 px-2 tab-button">
+        Exchange
+      </button>
+    </li>
+    <li class="p-1 pr-2 -ml-2 rounded-r-lg focus-within:z-10 bg-slate-900">
+      <button onclick="showSection(event, 'orders');completedOrders();clearAllExchanges();" class="py-1 pr-2.5 pl-2 tab-button">
+        Orders
+      </button>
+    </li>
+  </ul>
+
+  <div id="dummyDiv"> <!-- DUMMY DIV TO HIDE -->
+
+    <div id="overview" class="flex flex-col md:px-6 tab-content">
+      <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <div class="h-32 card">
+          <p class="flex flex-row justify-between h-32 text-sm font-medium text-gray-400">Available Balance<img class="icon" src="../img/wallet.svg"></p>
+          <p class="mb-2 text-2xl font-semibold" id="assetBalance"><img class="animate-spin icon" src="../img/loader.svg"></p>           
+          <p class="h-24 text-sm font-medium text-gray-300/80"><span id="asset"><img class="animate-spin inline h-3 w-3 mx-3" src="../img/loader.svg"></span></p>
+        </div>
+        <div class="h-32 card">
+          <p class="flex flex-row justify-between h-32 text-sm font-medium text-gray-400">Available Gas<img class="icon" src="../img/rocket.svg"></p>
+          <p class="mb-2 text-2xl font-semibold" id="blxBalance"><img class="animate-spin icon" src="../img/loader.svg"></p>           
+          <p class="h-24 text-sm font-medium text-gray-300/80">BLX</p>
+        </div>
+        <div class="h-32 card">
+          <p class="flex flex-row justify-between h-32 text-sm font-medium text-gray-400">Node Status<img class="icon" src="../img/laptop.svg"></p>
+          <span id="state" class="flex items-center mb-2 text-2xl font-semibold"><img class="my-2 animate-spin icon" src="../img/loader.svg"></span>           
+          <p class="h-24 text-sm font-medium text-gray-300/80" id="nodeAddress"><img class="ml-1 animate-spin h-3 w-3 inline mb-1" src="../img/loader.svg"></p>
+        </div>
+        <div class="h-32 card">
+          <p class="flex flex-row justify-between h-32 text-sm font-medium text-gray-400">Blockchain Status<img class="icon" src="../img/activity.svg"></p>
+          <span id="state2" class="flex items-center mb-2 text-2xl font-semibold"><img class="my-2 animate-spin icon" src="../img/loader.svg"></span>           
+          <p class="h-24 text-sm font-medium text-gray-300/80">Block <span id="blocks"><img class="ml-1 animate-spin h-3 w-3 inline mb-1" src="../img/loader.svg"></span></p>
+        </div>
+      </div>
+      <div class="overflow-x-hidden py-4 px-3 mt-4 rounded-lg border md:px-6 border-neutral-800">
+        <p class="pb-1 pl-2 text-lg font-medium md:pl-0">Recent Activity</p>
+        <table class="w-full text-sm text-left table-fixed rtl:text-right">
+          <thead class="text-sm font-semibold text-gray-300/80">
+            <tr>
+              <th scope="col" class="hidden py-1 pl-2 font-medium md:table-cell md:w-28">
+                Date
+              </th>
+              <th scope="col" class="hidden py-1 pl-2 font-medium md:table-cell md:w-24">
+                Type
+              </th>
+              <th scope="col" class="hidden py-1 pl-2 font-medium md:table-cell md:w-20">
+                Amount
+              </th>
+              <th scope="col" class="hidden py-1 pl-2 font-medium md:table-cell md:w-32">
+                Account
+              </th>
+              <th scope="col" class="hidden py-1 px-2 font-medium text-right md:table-cell md:w-16">
+                Status
+              </th>
+            </tr>
+          </thead>
+          <tbody class="font-medium text-gray-300/90" id="pendingBody"></tbody>
+          <tbody class="font-medium text-gray-300/90" id="completedBody">
+            <tr>
+              <td id="noTxMobile" class="py-16 px-3 text-center text-gray-300/80 md:hidden"><img class="animate-spin icon" src="../img/loader.svg"></td>
+              <td class="hidden py-1 px-8 text-center md:table-cell"></td>
+              <td class="hidden py-1 px-8 text-center md:table-cell"></td>
+              <td id="noTxDesktop" class="hidden h-[196px] font-normal text-center md:table-cell text-gray-300/80"><img class="animate-spin icon" src="../img/loader.svg"></td>
+              <td class="hidden py-1 px-8 text-center md:table-cell"></td>
+              <td class="hidden py-1 px-8 text-center md:table-cell"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="mt-5 space-x-2">
+        <button onclick="window.location.href = '../transactions'" class="py-2.5 px-3 w-28 text-lg font-medium text-white bg-blue-600 rounded-lg cursor-pointer md:text-base hover:bg-blue-600/90">View All</button>
+        <button onclick="logout()" class="py-2.5 px-3 w-28 text-lg font-medium text-white bg-blue-600 rounded-lg cursor-pointer md:text-base hover:bg-blue-600/90">Logout</button>
+      </div>
+    </div>
+
+    <div id="market" class="flex hidden flex-col md:mx-6 tab-content">
+      <div class="grid gap-4 md:grid-cols-2">
+        <div class="h-32 card">
+          <p class="flex flex-row justify-between font-medium text-gray-400">New Messages<img class="icon2" src="../img/mail.svg"></p>
+          <p class="pl-2 mb-1 text-2xl font-semibold" id="messages"><img class="animate-spin icon" src="../img/loader.svg"></p>  
+          <a href="../market/messages" class="text-blue-500">view messages</a>         
+        </div>
+        <div class="h-32 card">
+          <p class="flex flex-row justify-between font-medium text-gray-400">Active Listings<img class="icon2" src="../img/users.svg"></p>
+          <p class="pl-2 mb-1 text-2xl font-semibold" id="goodsCount"><img class="animate-spin icon" src="../img/loader.svg"></p>
+          <a href="" class="text-blue-500">view listings</a>
+        </div>
+      </div>
+
+      <div class="overflow-x-hidden py-4 px-3 mt-4 rounded-lg border md:px-6 border-neutral-800">
+        <p class="pb-1 pl-2 text-lg font-medium md:pl-0">Recent Listings</p>
+        <table class="w-full text-sm text-left table-fixed rtl:text-right">
+          <thead class="text-sm font-semibold text-gray-300/80">
+            <tr>
+              <th scope="col" class="hidden py-1 pl-2 font-medium md:table-cell md:w-28">
+                Date
+              </th>
+              <th scope="col" class="hidden py-1 pl-2 font-medium md:table-cell md:w-24">
+                Title
+              </th>
+              <th scope="col" class="hidden py-1 pl-2 font-medium md:table-cell md:w-20">
+                Price
+              </th>
+              <th scope="col" class="hidden py-1 pl-2 font-medium md:table-cell md:w-32">
+                City
+              </th>
+              <th scope="col" class="hidden py-1 px-2 font-medium text-right md:table-cell md:w-16">
+                Status
+              </th>
+            </tr>
+          </thead>
+          <tbody class="font-medium text-gray-300/90" id="listingsBody">
+            <tr>
+              <td id="listingsBodySpinnerMobile" class="py-12 px-3 text-center text-gray-300 md:hidden"><img class="animate-spin icon" src="../img/loader.svg"></td>
+              <td class="hidden py-1.5 px-8 text-center md:table-cell"></td>
+              <td class="hidden py-1.5 px-8 text-center md:table-cell"></td>
+              <td id="listingsBodySpinner" class="hidden py-16 font-normal text-center md:table-cell text-gray-300/80"><img class="ml-1 animate-spin icon" src="../img/loader.svg"></td>
+              <td class="hidden py-1.5 px-8 text-center md:table-cell"></td>
+              <td class="hidden py-1.5 px-8 text-center md:table-cell"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="mt-4 ml-1 text-gray-300/90">home city - <span class="font-semibold" id="homeCity"></span>&nbsp;-&nbsp;<a href="../market/setCity/" class="text-sm text-blue-500 cursor-pointer">change</a></p>
+
+      <div class="mt-5 space-x-2">
+        <button onclick="window.location.href = '../market'" class="py-2.5 px-5 text-lg font-medium text-white bg-blue-600 rounded-lg cursor-pointer md:text-base hover:bg-blue-600/90">View All Cities</button>
+        <button id="viewHomeCityBtn" class="py-2.5 px-6 text-lg font-medium text-white bg-blue-600 rounded-lg cursor-pointer md:text-base hover:bg-blue-600/90">View My City</button>
+      </div>
+    </div>
+
+    <div id="exchange" class="hidden flex flex-col min-h-[calc(100dvh-175px)] md:px-8 tab-content">
+      <div class="flex overflow-x-hidden relative flex-col p-4 w-full rounded-lg border max-h-[800px] border-neutral-800">
+          <div class="pb-3 pl-1 w-full md:pb-2 md:pl-4">
+            <label for="toggle" class="flex items-center">
+              <div class="relative cursor-pointer">
+                <input id="toggle" name="toggle" type="checkbox" class="sr-only">
+                <div class="w-6 h-2 bg-gray-400 rounded-full toggleBg"></div>
+                <div onclick="hideZero()" class="absolute -top-1 -left-1 w-4 h-4 bg-white rounded-full transition dot"></div>
+              </div>
+              <div class="ml-3 text-sm text-gray-300">
+                Hide Zero Balances
+              </div>
+            </label>
+          </div>
+        <div id="flexDiv" class="flex md:px-2">
+        <table class="overflow-x-scroll mt-0.5 w-full text-base md:table-fixed">
+          <thead class="text-sm text-gray-300">
+            <tr>
+              <th scope="col" class="hidden py-1 font-medium text-left md:table-cell md:w-1/2">
+                Name
+              </th>
+              <th scope="col" class="hidden py-1 w-10 font-medium text-right md:table-cell">
+                Code
+              </th>
+              <th scope="col" class="hidden py-1 w-10 font-medium text-right md:table-cell">
+                Balance
+              </th>
+              <th scope="col" class="hidden py-1 w-10 font-medium text-right md:table-cell">
+                Price
+              </th>
+              <th scope="col" class="hidden py-1 w-10 font-medium text-right md:table-cell">
+                24HR
+              </th>
+            </tr>
+          </thead>
+          <tbody class="overflow-x-scroll w-full font-medium text-gray-300/70">
+            <tr onclick="stats('AUDX', 0)" class="cursor-pointer hover:bg-gray-900/50">
+              <td class="py-1 md:hidden"><img class="flag" src="../img/flags/au.svg"></td>
+              <td class="nameMobile">Australian Dollar<br/>
+                <span class="font-normal qty text-gray-300/90" id="AUDXBM">0.00 AUDX</span>
+              </td>
+              <td class="py-1 text-right text-gray-300 md:hidden"><span id="AUDXPM">0.00 BLX</span><br/>
+                <span id="AUDX1DM">0.00%</span>
+              </td>
+              <td class="name"><img class="x-icon" src="../img/flags/au.svg"> Australian Dollar</td>
+              <td class="tableCell">AUDX</td>
+              <td id="AUDXB" class="tableCell qty">0.00</td>
+              <td class="tableCell" id='AUDXP'>0.00</td>
+              <td class="tableCell" id="AUDX1D">0.00%</td>
+            </tr>
+            <tr onclick="stats('GBPX', 0)" class="cursor-pointer hover:bg-gray-900/50">
+              <td class="py-1 md:hidden"><img class="flag" src="../img/flags/gb.svg"></td>
+              <td class="nameMobile">British Pound<br/>
+                <span class="font-normal qty text-gray-300/90" id="GBPXBM">0.00 GBPX</span>
+              </td>
+              <td class="py-1 text-right text-gray-300 md:hidden"><span id="GPBXPM">0.00 BLX</span><br/>
+                <span id="GPBX1DM">0.00%</span>
+              </td>
+              <td class="name"><img class="x-icon" src="../img/flags/gb.svg"> British Pound</td>
+              <td class="tableCell">GBPX</td>
+              <td id="GBPXB" class="tableCell qty">0.00</td>
+              <td class="tableCell" id='GPBXP'>0.00</td>
+              <td class="tableCell" id="GPBX1D">0.00%</td>
+            </tr>
+            <tr onclick="stats('CADX', 0)" class="cursor-pointer hover:bg-gray-900/50">
+              <td class="py-1 md:hidden"><img class="flag" src="../img/flags/ca.svg"></td>
+              <td class="nameMobile">Canadian Dollar<br/>
+                <span class="font-normal qty text-gray-300/90" id="CADXBM">0.00 CADX</span>
+              </td>
+              <td class="py-1 text-right text-gray-300 md:hidden"><span id="CADXPM">0.00 BLX</span><br/>
+                <span id="CADX1DM">0.00%</span>
+              </td>
+              <td class="name"><img class="x-icon" src="../img/flags/ca.svg"> Canadian Dollar</td>
+              <td class="tableCell">CADX</td>
+              <td id="CADXB" class="tableCell qty">0.00</td>
+              <td class="tableCell" id='CADXP'>0.00</td>
+              <td class="tableCell" id="CADX1D">0.00%</td>
+            </tr>
+            <tr onclick="stats('CNYX', 0)" class="cursor-pointer hover:bg-gray-900/50">
+              <td class="py-1 md:hidden"><img class="w-14 flag" src="../img/flags/cn.svg"></td>
+              <td class="nameMobile">Chinese Yuan<br/>
+                <span class="font-normal qty text-gray-300/90" id="CNYXBM">0.00 CNYX</span>
+              </td>
+              <td class="py-1 text-right text-gray-300 md:hidden"><span id="CNYXPM">0.00 BLX</span><br/>
+                <span id="CNYX1DM">0.00%</span>
+              </td>
+              <td class="name"><img class="x-icon" src="../img/flags/cn.svg"> Chinese Yuan</td>
+              <td class="tableCell">CNYX</td>
+              <td id="CNYXB" class="tableCell qty">0.00</td>
+              <td class="tableCell" id='CNYXP'>0.00</td>
+              <td class="tableCell" id="CNYX1D">0.00%</td>
+            </tr>
+            <tr onclick="stats('EURX', 0)" class="cursor-pointer hover:bg-gray-900/50">
+              <td class="py-1 md:hidden"><img class="flag" src="../img/flags/eu.svg"></td>
+              <td class="nameMobile">Euro<br/>
+                <span class="font-normal qty text-gray-300/90" id="EURXBM">0.00 EURX</span>
+              </td>
+              <td class="py-1 text-right text-gray-300 md:hidden"><span id="EURXPM">0.00 BLX</span><br/>
+                <span id="EURX1DM">0.00%</span>
+              </td>
+              <td class="name"><img class="x-icon" src="../img/flags/eu.svg"> Euro</td>
+              <td class="tableCell">EURX</td>
+              <td id="EURXB" class="tableCell qty">0.00</td>
+              <td class="tableCell" id='EURXP'>0.00</td>
+              <td class="tableCell" id="EURX1D">0.00%</td>
+            </tr>
+            <tr onclick="stats('IRRX', 0)" class="cursor-pointer hover:bg-gray-900/50">
+              <td class="py-1 md:hidden"><img class="flag" src="../img/flags/ir.svg"></td>
+              <td class="nameMobile">Iranian Rial<br/>
+                <span class="font-normal qty text-gray-300/90" id="IRRXBM">0.00 IRRX</span>
+              </td>
+              <td class="py-1 text-right text-gray-300 md:hidden"><span id="IRRXPM">0.00 BLX</span><br/>
+                <span id="IRRX1DM">0.00%</span>
+              </td>
+              <td class="name"><img class="x-icon" src="../img/flags/ir.svg"> Iranian Rial</td>
+              <td class="tableCell">IRRX</td>
+              <td id="IRRXB" class="tableCell qty">0.00</td>
+              <td class="tableCell" id='IRRXP'>0.00</td>
+              <td class="tableCell" id="IRRX1D">0.00%</td>
+            </tr>
+            <tr onclick="stats('IQDX', 0)" class="cursor-pointer hover:bg-gray-900/50">
+              <td class="py-1 md:hidden"><img class="flag" src="../img/flags/iq.svg"></td>
+              <td class="nameMobile">Iraqi Dinar<br/>
+                <span class="font-normal qty text-gray-300/90" id="IQDXBM">0.00 IQDX</span>
+              </td>
+              <td class="py-1 text-right text-gray-300 md:hidden"><span id="IQDXPM">0.00 BLX</span><br/>
+                <span id="IQDX1DM">0.00%</span>
+              </td>
+              <td class="name"><img class="x-icon" src="../img/flags/iq.svg"> Iraqi Dinar</td>
+              <td class="tableCell">IQDX</td>
+              <td id="IQDXB" class="tableCell qty">0.00</td>
+              <td class="tableCell" id='IQDXP'>0.00</td>
+              <td class="tableCell" id="IQDX1D">0.00%</td>
+            </tr>
+            <tr onclick="stats('JPYX', 0)" class="cursor-pointer hover:bg-gray-900/50">
+              <td class="py-1 md:hidden"><img class="flag" src="../img/flags/jp.svg"></td>
+              <td class="nameMobile">Japanese Yen<br/>
+                <span class="font-normal qty text-gray-300/90" id="JPYXBM">0.00 JPYX</span>
+              </td>
+              <td class="py-1 text-right text-gray-300 md:hidden"><span id="JPYXPM">0.00 BLX</span><br/>
+                <span id="JPYX1DM">0.00%</span>
+              </td>
+              <td class="name"><img class="x-icon" src="../img/flags/jp.svg"> Japanese Yen</td>
+              <td class="tableCell">JPYX</td>
+              <td id="JPYXB" class="tableCell qty">0.00</td>
+              <td class="tableCell" id='JPYXP'>0.00</td>
+              <td class="tableCell" id="JPYX1D">0.00%</td>
+            </tr>
+            <tr onclick="stats('NZDX', 0)" class="cursor-pointer hover:bg-gray-900/50">
+              <td class="py-1 md:hidden"><img class="flag" src="../img/flags/nz.svg"></td>
+              <td class="nameMobile">N. Zealand Dollar<br/>
+                <span class="font-normal qty text-gray-300/90" id="NZDXBM">0.00 NZDX</span>
+              </td>
+              <td class="py-1 text-right text-gray-300 md:hidden"><span id="NZDXPM">0.00 BLX</span><br/>
+                <span id="NZDX1DM">0.00%</span>
+              </td>
+              <td class="name"><img class="x-icon" src="../img/flags/nz.svg"> N. Zealand Dollar</td>
+              <td class="tableCell">NZDX</td>
+              <td id="NZDXB" class="tableCell qty">0.00</td>
+              <td class="tableCell" id='NZDXP'>0.00</td>
+              <td class="tableCell" id="NZDX1D">0.00%</td>
+            </tr>
+            <tr onclick="stats('RUBX', 0)" class="cursor-pointer hover:bg-gray-900/50">
+              <td class="py-1 md:hidden"><img class="flag" src="../img/flags/ru.svg"></td>
+              <td class="nameMobile">Russian Ruble<br/>
+                <span class="font-normal qty text-gray-300/90" id="RUBXBM">0.00 RUBX</span>
+              </td>
+              <td class="py-1 text-right text-gray-300 md:hidden"><span id="RUBXPM">0.00 BLX</span><br/>
+                <span id="RUBX1DM">0.00%</span>
+              </td>
+              <td class="name"><img class="x-icon" src="../img/flags/ru.svg"> Russian Ruble</td>
+              <td class="tableCell">RUBX</td>
+              <td id="RUBXB" class="tableCell qty">0.00</td>
+              <td class="tableCell" id='RUBXP'>0.00</td>
+              <td class="tableCell" id="rRUBX1D">0.00%</td>
+            </tr>
+            <tr onclick="stats('CHFX', 0)" class="cursor-pointer hover:bg-gray-900/50">
+              <td class="py-1 md:hidden"><img class="flag" src="../img/flags/ch.svg"></td>
+              <td class="nameMobile">Swiss Franc<br/>
+                <span class="font-normal qty text-gray-300/90" id="CHFXBM">0.00 CHFX</span>
+              </td>
+              <td class="py-1 text-right text-gray-300 md:hidden"><span id="CHFXPM">0.00 BLX</span><br/>
+                <span id="CHFX1DM">0.00%</span>
+              </td>
+              <td class="name"><img class="x-icon" src="../img/flags/ch.svg"> Swiss Franc</td>
+              <td class="tableCell">CHFX</td>
+              <td id="CHFXB" class="tableCell qty">0.00</td>
+              <td class="tableCell" id='CHFXP'>0.00</td>
+              <td class="tableCell" id="CHFX1D">0.00%</td>
+            </tr>
+            <tr onclick="stats('USDX', 0)" class="cursor-pointer hover:bg-gray-900/50">
+              <td class="py-1 md:hidden"><img class="flag" src="../img/flags/us.svg"></td>
+              <td class="nameMobile">U.S. Dollar<br/>
+                <span class="font-normal qty text-gray-300/90" id="USDXBM">0.00 USDX</span>
+              </td>
+              <td class="py-1 text-right text-gray-300 md:hidden"><span id="USDXPM">0.00 BLX</span><br/>
+                <span id="USDX1DM">0.00%</span>
+              </td>
+              <td class="name"><img class="x-icon" src="../img/flags/us.svg"> U.S. Dollar</td>
+              <td class="tableCell">USDX</td>
+              <td id="USDXB" class="tableCell qty">0.00</td>
+              <td class="tableCell" id='USDXP'>0.00</td>
+              <td class="tableCell" id="USDX1D">0.00%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      </div>
+    </div>
+
+    <!-- ORDERS TAB -->
+    <div id="orders" class="flex hidden flex-col md:px-6 tab-content">
+      <div class="flex overflow-x-auto flex-col flex-grow rounded-lg p-3 pt-1 border min-h-[150px] border-neutral-800">
+        <ul class="flex items-center pb-1 text-lg font-semibold text-center text-gray-400 md:pt-2 md:pb-2">
+          <li class="py-1 rounded-l-lg focus-within:z-10">
+            <button id="open" onclick="showSection3(event, 'yes')" class="py-1 px-3 text-sm hover:text-gray-300 ordersTab tab-button3">
+              Open
+            </button>
+          </li>
+          <li class="py-1 rounded-r-lg focus-within:z-10">
+            <button id="history" onclick="showSection3(event, 'no')"  class="py-1 px-3 text-sm hover:text-gray-300 tab-button3">
+              History
+            </button>
+          </li>
+        </ul>
+        <div id="openTable" class="flex flex-grow px-4 md:px-5">
+        <table class="overflow-x-scroll w-full text-sm table-fixed">
+          <thead id="openTableHeader" class="text-gray-300">
+            <tr>
+              <th scope="col" class="pt-1 pb-1.5 w-40 font-medium text-left md:w-1/3">
+                Name
+              </th>
+              <th scope="col" class="pt-1 pb-1.5 w-12 font-medium text-right">
+                Code
+              </th>
+              <th scope="col" class="pt-1 pb-1.5 w-14 font-medium text-right">
+                Type
+              </th>
+              <th scope="col" class="pt-1 pb-1.5 w-20 font-medium text-right">
+                Price
+              </th>
+              <th scope="col" class="pt-1 pb-1.5 w-28 font-medium text-right">
+                Amount
+              </th>
+              <th scope="col" class="pt-1 pb-1.5 pr-4 w-24 font-medium text-right">
+                Action
+              </th>
+            </tr>
+          </thead>
+          <tbody id="openBuyBody" class="overflow-x-scroll w-full text-gray-300"></tbody>
+          <tbody id="openSellBody" class="overflow-x-scroll w-full text-gray-300"></tbody>
+        </table> 
+        </div>
+        <div id="historyTable" class="flex hidden flex-grow px-4 w-full md:px-5 pb-1">
+        <table class="overflow-x-scroll w-full text-sm table-fixed">
+          <thead class="text-gray-300">
+            <tr>
+              <th scope="col" class="pt-1 pb-2 w-24 font-medium text-left md:w-1/3">
+                Date
+              </th>
+              <th scope="col" class="pt-1 pb-2 w-12 font-medium text-right">
+                Code
+              </th>
+              <th scope="col" class="pt-1 pb-2 w-14 font-medium text-right">
+                Type
+              </th>
+              <th scope="col" class="pt-1 pb-2 w-28 font-medium text-right">
+                Amount
+              </th>
+              <th scope="col" class="pt-1 pb-2 w-20 font-medium text-right">
+                Price
+              </th>
+              <th scope="col" class="pt-1 pb-2 w-28 font-medium text-right">
+                Total
+              </th>
+            </tr>
+          </thead>
+          <tbody id="historyBody" class="overflow-x-scroll w-full text-gray-300/90"></tbody>
+        </table>
+        </div>     
+      </div>
+    </div>
+
+  </div> <!-- DUMMY DIV TO HIDE -->
+
+  <!-- ACTIONS MODAL -->
+  <div id="actions_modal" class="hidden flex min-h-[calc(100dvh-300px)] items-center justify-center">
+    <div class="p-4 w-full rounded-lg border border-neutral-800 md:max-w-[375px]">
+      <h1 class="flex justify-between pl-1 text-2xl font-semibold text-gray-200">Account Info</h1>
+      <p id="account_modal" class="pl-1 text-xl"></p>
+      <div class="flex justify-center pt-7 pb-9 w-full">
+        <span id="accountQR" class="p-2 bg-white"></span>
+      </div>
+      <button onclick="blxModal()" class="mb-3 md:mb-2.5 w-full btn btn-blue text-lg">Send BLX</button>
+      <button onclick="currencyModal('default')" class="mb-3 md:mb-2.5 w-full btn btn-blue text-lg">
+        Send <span id="assetBtn"></span></button>
+      <button onclick="closeModal()" class="mt-1 w-full border bg-gray-700/20 border-neutral-800 text-white text-lg font-medium pt-2 pb-2.5 rounded-lg cursor-pointer hover:bg-gray-700/25">Cancel</button> 
+    </div>
+  </div>
+
+  <!-- Send Currency Modal -->
+  <div id="currency_modal" class="hidden min-h-[calc(100dvh-300px)] flex items-center justify-center mt-2">
+    <div class="p-4 w-full md:px-5 rounded-lg border border-neutral-800 md:max-w-[375px]">
+      <h1 class="flex pb-4 text-2xl font-semibold text-gray-200">Send&nbsp;<span id="currModal"></span></h1>
+
+      <form id="formCur">
+      <div class="relative">  
+        <label for="accountCur" class="label">BLX Account:</label>
+        <input type="text" id="accountCur" name="accountCur" placeholder="BLX -" class="input" spellcheck="false" oninput="clearErrorCur()" required autocomplete="off">
+        <div class="flex absolute inset-y-0 right-0 items-center pt-6 pr-3"> 
+            <img onclick="qrScan(currency_modal, accountCur)" class="cursor-pointer icon" src="../img/qr-code.svg">
+        </div>
+      </div>
+      <div class="mt-3">
+        <label for="amountCur" class="label">Amount:</label>
+        <input type="text" inputmode="numeric" pattern="[0-9+-.]+" oninput="valid(this)" id="amountCur" name="amountCur" placeholder="0.00" class="input" spellcheck="false" required autocomplete="off">
+      </div>
+      <div class="relative mt-3">
+        <label for="secretPhraseCur" class="label">Your Passphrase:</label>
+        <input type="password" id="secretPhraseCur" name="secretPhraseCur" placeholder="●●●●●●" class="input" spellcheck="false" required autocomplete="off">
+        <div class="flex absolute inset-y-0 right-0 items-center pt-6 pr-3"> 
+            <img onclick="qrScan(currency_modal, secretPhraseCur)" class="cursor-pointer icon" src="../img/qr-code.svg">
+        </div>
+      </div>
+      <span id="errorCur" class="mt-2 ml-2 -mb-4 text-sm text-red-500" style="display:none;"></span>
+      <button type="submit" id="btnCur" class="mt-8 mb-4 w-full md:mt-6 md:mb-3 btn btn-blue text-lg">Send&nbsp;<span id="currModalBtn"></span></button>
+      <button type="submit" id="loadingBtnCur" class="hidden mt-8 mb-5 w-full md:mt-6 md:mb-3 btn btn-blue text-lg" disabled><img class="-ml-2 animate-spin icon" src="../img/loader.svg">&nbsp;loading...</button>
+      </form>
+
+      <button onclick="closeModal()" class="mb-1 w-full border bg-gray-700/20 border-neutral-800 text-gray-300 text-lg font-medium p-2.5 rounded-lg cursor-pointer hover:bg-gray-700/25">Cancel</button>      
+    </div>
+  </div>
+
+  <!--Send BLX Modal -->
+  <div id="blx_modal" class="hidden min-h-[calc(100dvh-300px)] flex items-center justify-center mt-2">
+    <div class="p-4 w-full md:px-5 rounded-lg border border-neutral-800 md:max-w-[375px]">
+      <h1 class="flex pb-4 text-2xl font-semibold text-gray-200">Send BLX</h1>
+
+      <form id="formBLX">
+      <div class="relative">  
+        <label for="accountBLX" class="label">BLX Account:</label>
+        <input type="text" id="accountBLX" name="accountBLX" placeholder="BLX -" class="input" spellcheck="false" oninput="clearErrorBLX()" required autocomplete="off">
+        <div class="flex absolute inset-y-0 right-0 items-center pt-6 pr-3"> 
+            <img onclick="qrScan(blx_modal, accountBLX)" class="cursor-pointer icon" src="../img/qr-code.svg">
+        </div>
+      </div>
+      <div class="mt-3">
+        <label for="amountBLX" class="label">Amount:</label>
+        <input type="text" inputmode="numeric" pattern="[0-9+-.]+" oninput="valid4(this)" id="amountBLX" name="amountBLX" placeholder="0.00" class="input" spellcheck="false" required autocomplete="off">
+      </div>
+      <div class="relative mt-3">
+        <label for="secretPhraseBLX" class="label">Your Passphrase:</label>
+        <input type="password" id="secretPhraseBLX" name="secretPhraseBLX" placeholder="●●●●●●" class="input" spellcheck="false" required autocomplete="off">
+        <div class="flex absolute inset-y-0 right-0 items-center pt-6 pr-3"> 
+            <img onclick="qrScan(blx_modal, secretPhraseBLX)" class="cursor-pointer icon" src="../img/qr-code.svg">
+        </div>
+      </div>
+      <span id="errorBLX" class="mt-2 ml-2 -mb-4 text-sm text-red-500" style="display:none;"></span>
+      <button type="submit" id="btnBLX" class="mt-8 mb-4 w-full md:mt-6 md:mb-3 btn btn-blue text-lg">Send BLX</button>
+      <button type="submit" id="loadingBtnBLX" class="hidden mt-8 mb-5 w-full md:mt-6 md:mb-3 btn btn-blue text-lg" disabled><img class="-ml-2 animate-spin icon" src="../img/loader.svg">&nbsp;loading...</button>
+      </form>
+
+      <button onclick="closeModal()" class="mb-1 w-full border bg-gray-700/20 border-neutral-800 text-gray-300 text-lg font-medium p-2.5 rounded-lg cursor-pointer hover:bg-gray-700/25">Cancel</button>    
+    </div>
+  </div>
+
+  <!-- CURRENCY STATS PAGE -->
+  <div id="currency_stats" class="hidden flex flex-col h-[calc(100dvh-250px)] items-center mt-2">
+    <div class="flex-grow w-full md:flex-grow-0 p-4 rounded-lg border md:max-w-[85vw] border-neutral-800 lg:max-w-[800px]">
+      <h1 id="stats_name" class="flex text-2xl font-semibold text-gray-200/95"></h1>
+      <div class="flex pt-0.5 mb-8 md:mb-3 text-gray-300/95">
+        <h3 id="stats_price" class="pl-1"></h3>
+        <h3 id="stats_1D" class="pl-3"></h3>
+        <h3 id="stats_balance" class="hidden"></h3>
+        <span id="chartLoader" class="hidden absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"><img class="w-6 h-6 text-gray-600 animate-spin" src="../img/loader.svg"></span>
+      </div>
+      <div class="flex-grow md:flex-grow-0 md:h-[calc(35dvh)] h-[calc(100dvh-500px)] w-full">
+        <canvas id="myChart" class="w-full"></canvas>
+      </div>
+    </div>
+    <div class="mx-auto mt-8 w-full md:max-w-[65vw] lg:max-w-[500px]">
+      <div class="justify-center items-center w-full">
+        <div class="inline flex flex-row gap-3">
+          <button onclick="swapModal();endUpdate()"class="mb-4 w-1/2 bg-blue-600 hover:bg-blue-600/95 md:mb-3 text-white font-medium p-2.5 rounded-lg cursor-pointer text-lg">Swap <span id="curBtn"> </span></button>
+          <button onclick="limitModal();endUpdate()" class="mb-4 w-1/2 bg-blue-600 hover:bg-blue-600/95 md:mb-3 text-white font-medium p-2.5 rounded-lg cursor-pointer text-lg">Limit Order</button>
+        </div>
+        <button onclick="closeModal();endUpdate()" class="mb-1 w-full border bg-gray-700/20 border-neutral-800 text-lg text-gray-300 font-medium p-3.5 lg:p-2.5 rounded-lg cursor-pointer hover:bg-gray-700/25">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <!-- SWAP MODAL -->
+  <div id="swapModal" class="flex hidden justify-center items-center mt-7 md:mt-4">
+    <div class="relative w-full p-3 rounded-lg border md:max-w-[375px] border-neutral-800">
+      <h1 id="swapModalName" class="pb-0.5 pl-1 text-2xl font-semibold">Australian Dollar</h1>
+      <div class="pb-2.5 pl-2 text-gray-300/95">
+        <h3><span id="swapModalPrice"></span> <span id="swapModalPercent" class="pl-1"></span></h3>
+        <a id="openOrdersSwap" data-modal-trigger aria-controls="openOrders" aria-expanded="false"
+          type="button" class="absolute -top-3 right-1 md:right-5 text-base font-medium text-blue-500 py-1.5 px-3 md:px-6 bg-[#0A0A0A] border border-neutral-800 rounded-lg cursor-pointer hover:text-blue-400">View Orders
+        </a>
+        <h3 class="absolute right-4 top-12 text-gray-400 md:right-5">
+          <span id="swapModalABalance" class="font-normal"></span>
+          <span id="swapModalBBalance" class="hidden font-normal"></span>
+        </h3>
+      </div>
+      <form id="swapForm">
+        <div class="mb-2 w-full h-24 rounded-lg border border-gray-800 bg-gray-700/20 md:h-18">
+          <p id="swapActionA" class="px-4 pt-2 pb-1 text-gray-300">Sell 
+            <span id="swapRateA" class="hidden ml-1">0.00</span>
+          </p>
+          <div class="flex flex-row justify-between">
+            <input id="swapAAmount" type="text" inputmode="numeric" pattern="[0-9+-.]+" oninput="valid(this);getSwapTotal();" placeholder="0.00" class="swap" spellcheck="false" autocomplete="off" required>
+            <div id="swapCurrencyA" class="token"></div>
+          </div>
+        </div>
+
+        <div id="arrowSwap" class="absolute z-20 left-1/2 bg-[#0A0A0A] rounded-lg p-1 -m-5" onclick="switchCurrencies();getSwapTotal();">
+          <img class="p-1 arrow bg-gray-700/20" src="../img/arrow-down.svg">
+        </div>
+
+        <div class="mb-2 w-full h-24 rounded-lg border border-gray-800 bg-gray-700/20 md:h-18">
+          <p id="swapActionB" class="py-1.5 px-4 text-gray-300">Buy
+            <span id="swapRateB" class="hidden">0.00</span>
+          </p>
+          <div class="flex flex-row justify-between">
+            <input id="swapBAmount" type="text" inputmode="numeric" pattern="[0-9+-.]+" placeholder="0.00" class="swap" spellcheck="false" autocomplete="off" readonly>
+            <div id="swapCurrencyB" class="token"></div>
+          </div>
+        </div>
+    
+        <button type="submit" class="mt-0.5 mb-2.5 w-full bg-blue-600 hover:bg-blue-600/95 text-white p-3 rounded-lg cursor-pointer font-medium text-lg">Submit</button>
+      </form>
+      <button onclick="closeModal();endUpdate2()" class="w-full border bg-gray-700/20 border-neutral-800 text-lg text-gray-300 p-2.5 rounded-lg cursor-pointer hover:bg-gray-700/25">Cancel
+      </button> 
+    </div>
+  </div>
+
+
+
+
+  <!-- Limit Modal -->
+  <div id="limitModal" class="flex hidden justify-center items-center mt-6 md:mt-3 lg:mt-1">
+    <div class="relative w-full p-3 rounded-lg border md:max-w-[375px] border-neutral-800">
+      <h1 id="limitModalName" class="pb-0.5 pl-1 text-2xl font-semibold">Australian Dollar</h1>
+      <div class="pb-2.5 pl-2 text-gray-300/95">
+        <h3><span id="limitModalPrice"></span> <span id="limitModalPercent" class="pl-1"></span></h3>
+        <a id="openOrdersLimit" data-modal-trigger aria-controls="openOrders" aria-expanded="false"
+          type="button" class="absolute -top-3 right-1 md:right-5 text-base font-medium text-blue-500 py-1.5 px-3 md:px-6 bg-[#0A0A0A] border border-neutral-800 rounded-lg cursor-pointer hover:text-blue-400">View Orders
+        </a>
+        <h3 class="absolute right-4 top-12 text-gray-400 md:right-5">
+          <span id="limitModalABalance" class="font-normal"></span>
+          <span id="limitModalBBalance" class="hidden font-normal"></span>
+        </h3>
+      </div>
+      <form id="limitForm">
+        <div class="mb-2 w-full h-24 rounded-lg border border-gray-800 md:mb-1.5 bg-gray-700/20 md:h-18">
+          <p id="limitCodeText" class="px-4 pt-2 pb-1 text-sm text-gray-400"></p>
+          <div class="flex flex-row justify-between">
+            <input id="limitModalPriceInput" type="text" inputmode="numeric" pattern="[0-9+-.]+" oninput="valid(this);getLimitTotal();" placeholder="0.00" class="swap" spellcheck="false" autocomplete="off" required>
+            <div class="token">BLX</div>
+          </div>
+        </div>
+
+        <div class="mb-2 w-full h-24 rounded-lg border border-gray-800 md:mb-1.5 bg-gray-700/20 md:h-18">
+          <p id="limitActionA" class="px-4 pt-2 pb-1 text-sm text-gray-400">Sell</p>
+          <div class="flex flex-row justify-between">
+            <input id="limitModalCurrencyInput" type="text" inputmode="numeric" pattern="[0-9+-.]+" oninput="valid(this);getLimitTotal();" placeholder="0.00" class="swap" spellcheck="false" autocomplete="off" required>
+            <div id="limitCurrencyA" class="token">USDX</div>
+          </div>
+        </div>
+
+        <div id="arrowLimit" class="absolute z-20 left-1/2 bg-[#0A0A0A] rounded-lg p-1 -m-5" onclick="switchCurrencies2()">
+          <img class="p-1 arrow bg-gray-700/20" src="../img/arrow-down.svg">
+        </div>
+
+        <div class="relative mb-3 w-full h-24 rounded-lg border border-gray-800 md:mb-2 bg-gray-700/20 md:h-18">
+          <p id="limitActionB" class="pt-1.5 px-4 text-sm text-gray-400">You Receive</p>
+          <div class="flex flex-row justify-between">
+            <input id="limitModalTotal" type="text" inputmode="numeric" pattern="[0-9+-.]+" placeholder="0.00" class="swap" spellcheck="false" autocomplete="off" readonly>
+            <div class="token">BLX</div>
+          </div>
+        </div>
+    
+        <button type="submit" class="mt-0.5 mb-2.5 w-full bg-blue-600 hover:bg-blue-600/95 text-white p-2.5 rounded-lg cursor-pointer font-medium text-lg">Submit</button>
+      </form>
+      <button onclick="closeModal();endUpdate2();" class="w-full border bg-gray-700/20 border-neutral-800 text-lg text-gray-300 p-2 rounded-lg cursor-pointer hover:bg-gray-700/25">Cancel
+      </button>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+<!-- Passphrase overlay for limit orders -->
+<div id="passphraseOverlayLimit" class="hidden w-full relative z-40" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div class="fixed inset-0 bg-black" aria-hidden="true"></div>
+  <div class="fixed inset-0 z-10 w-full overflow-y-auto">
+    <div class="flex min-h-full items-end justify-center p-4 text-center items-center">
+      <div class="relative overflow-hidden border border-gray-800 rounded-lg bg-black w-full md:max-w-[400px]">
+        <div class="relative pt-2.5 px-5 pb-4">
+          <label for="secretPhraseLimit" class="text-lg text-gray-300">Account Passphrase:</label>
+          <input oninput="hideQR('secretPhraseLimit','overlayQR1')" type="password" id="secretPhraseLimit" name="secretPhraseLimit" placeholder="●●●●●●●●●●" class="w-full text-gray-100 bg-transparent p-3 border border-gray-700 rounded-lg mt-2.5 placeholder-gray-600/90" spellcheck="false" required autocomplete="off">
+
+          <div id="overlayQR1" class="flex absolute inset-y-0 right-8 -top-20 items-center mb-1"> 
+  <!--TODO--> <img onclick="qrScan(passphraseOverlayLimit, secretPhraseLimit)" class="cursor-pointer icon" src="../img/qr-code.svg">
+          </div>
+          <p id="overlayErrorLimit" class="mt-1.5 text-sm text-red-500"></p>
+          <button onclick="submitLimitOrder()" class="mt-3.5 w-full bg-green-500 hover:bg-green-500/95 text-white p-2.5 rounded-lg cursor-pointer font-medium text-lg">Confirm</button>
+          <button onclick="hideLimitOverlay();resetQR('secretPhraseLimit','overlayQR1');" class="mt-2.5 w-full border border-neutral-800 bg-gray-700/20 hover:bg-gray-700/25 text-lg text-gray-300 font-medium p-2 rounded-lg cursor-pointer">Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<!-- Passphrase overlay for swap orders -->
+<div id="passphraseOverlaySwap" class="hidden w-full relative z-40" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+  <div class="fixed inset-0 bg-black/90" aria-hidden="true"></div>
+  <div class="fixed inset-0 z-10 w-full overflow-y-auto">
+    <div class="flex min-h-full items-end justify-center p-4 text-center items-center">
+      <div class="relative overflow-hidden border border-gray-800 rounded-lg bg-black w-full md:max-w-[400px]">
+        <div class="relative pt-2.5 px-5 pb-4">
+          <label for="secretPhraseSwap" class="text-lg text-gray-300">Account Passphrase:</label>
+          <input oninput="hideQR('secretPhraseSwap','overlayQR2')" type="password" id="secretPhraseSwap" name="secretPhraseSwap" placeholder="●●●●●●●●●●" class="w-full text-gray-100 bg-transparent p-3 border border-gray-700 rounded-lg mt-2.5 placeholder-gray-600/90" spellcheck="false" required autocomplete="off">
+
+          <div id="overlayQR2" class="flex absolute inset-y-0 right-8 -top-20 items-center mb-1"> 
+  <!--TODO--> <img onclick="qrScan(passphraseOverlaySwap, secretPhraseSwap)" class="cursor-pointer icon" src="../img/qr-code.svg">
+          </div>
+          <p id="overlayErrorSwap" class="mt-1.5 text-sm text-red-500"></p>
+          <button onclick="submitSwapOrder()" class="mt-3.5 w-full bg-green-500 hover:bg-green-500/95 text-white p-2.5 rounded-lg cursor-pointer font-medium text-lg">Confirm</button>
+          <button onclick="hideSwapOverlay();resetQR('secretPhraseSwap','overlayQR2');" class="mt-2.5 w-full border border-neutral-800 bg-gray-700/20 hover:bg-gray-700/25 text-lg text-gray-300 font-medium p-2 rounded-lg cursor-pointer">Cancel
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+  <!-- Cancel Order Slide-In Modal -->
+  <div id="cancelOrder" data-modal-target class="hidden overflow-hidden absolute inset-0">
+    <div data-modal-close data-modal-overlay tabindex="-1" data-class-in="opacity-50" data-class-out="opacity-0"
+      class="fixed inset-0 z-40 w-full bg-black opacity-0 duration-500 select-none"></div>
+      <div data-modal-wrapper data-class-in="translate-x-0" data-class-out="translate-x-full" class="flex overflow-auto fixed top-0 right-0 bottom-0 z-50 flex-col w-10/12 max-w-md h-full bg-black border-l transition-transform duration-300 transform translate-x-full scrolling-touch border-neutral-800">
+        <div class="flex justify-between items-center p-6">
+        <h3 class="text-xl font-medium text-gray-300">Cancel Order</h3>
+        <button data-modal-close class="ml-auto text-gray-700 transition duration-150 ease-in-out hover:text-black focus:text-black" aria-label="Close">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+          <span class="sr-only">Close</span>
+        </button>
+      </div>
+      <div class="overflow-y-auto overflow-x-hidden relative p-4 h-5/6">
+        <div id="cancelForm" class="flex flex-col flex-grow justify-center items-start px-4 mt-2 w-full md:px-5 text-gray-300/85">
+          <p class="py-1">Order:&ensp;<span id="orderCancel" class="text-gray-200"></span></p>
+          <p class="py-1">Type:&ensp;<span id="typeCancel" class="text-gray-200"></span></p>
+          <p class="py-1">Currency:&ensp;<span id="nameCancel" class="text-gray-200"></span></p>
+          <p class="py-1">Amount:&ensp;<span id="amtCancel" class="text-gray-200"></span></p>
+          <p class="py-1">Price:&ensp;<span id="priceCancel" class="text-gray-200"></span></p>
+          <p class="py-1">Expires In:&ensp;<span id="expiresCancel" class="text-gray-200"></span></p>
+          <div class="relative mt-10 w-full">
+            <label for="secretPhraseCancel">Account Passphrase:</label>
+            <input type="password" id="secretPhraseCancel" name="secretPhraseCancel" placeholder="●●●●●●" class="py-2.5 px-3 mt-3 w-full text-white bg-transparent rounded-lg border border-gray-800 placeholder-gray-600/80" spellcheck="false" autocomplete="off">
+            <div class="flex absolute inset-y-0 right-0 items-center pt-8 pr-3"> 
+                <!--TODO QR CODE -->
+              <img onclick="qrScan(blx_modal, secretPhraseBLX)" class="cursor-pointer icon" src="../img/qr-code.svg">
+            </div>
+          </div>
+          <span id="errorCancel" class="hidden pt-2 pl-1 text-sm text-red-500"></span>
+          <button id="cancelOrderBtn" onclick="cancelOrder()" class="mt-4 w-full bg-red-600 hover:bg-red-600/90 text-white font-medium p-3.5 rounded-lg cursor-pointer">Cancel Order</button>
+          <button id="loadingCancelOrderBtn" class="hidden mt-4 w-full bg-red-600 btn" disabled><img class="-ml-2 animate-spin icon" src="../img/loader.svg">&nbsp;loading...</button>
+        </div>
+
+        <div id="cancelSuccess" class="flex hidden flex-col justify-center mt-2 w-full text-gray-300/85">
+          <p class="p-5 text-green-500">Order will be canceled in the next block.</p>
+          <div class="justify-center items-center p-4 w-full">
+            <button id="closeCancelSuccess" data-modal-close type="button" class="btn bg-transparent text-gray-300 w-full border border-neutral-800 hover:bg-[#0e0e0e]">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Orders Slide-In Modal -->
+  <div id="openOrders" data-modal-target class="hidden overflow-hidden absolute inset-0">
+    <div data-modal-close data-modal-overlay tabindex="-1" data-class-in="opacity-50" data-class-out="opacity-0"
+      class="fixed inset-0 z-40 w-full bg-black opacity-0 duration-500 select-none"></div>
+      <div data-modal-wrapper data-class-in="translate-x-0" data-class-out="translate-x-full" class="flex overflow-auto fixed top-0 right-0 bottom-0 z-50 flex-col w-10/12 max-w-md h-full bg-black border-l transition-transform duration-300 transform translate-x-full scrolling-touch border-neutral-800">
+        <div class="flex justify-between items-center p-6">
+        <h3 class="font-semibold text-gray-300">Open <span id="openOrdersCode"></span> Orders</h3>
+      </div>
+      <div class="overflow-y-auto overflow-x-hidden relative p-4 h-5/6">
+        <div id="h" class="flex flex-grow px-4 w-full md:px-5">
+        <table class="overflow-x-scroll w-full text-sm table-fixed">
+          <thead class="pb-4 text-gray-300">
+            <tr>
+              <th scope="col" class="pt-1 pb-2 w-1/3 font-medium text-left">
+                Price (BLX)
+              </th>
+              <th scope="col" class="pt-1 pb-2 w-1/3 font-medium text-right">
+                Amount
+              </th>
+              <th scope="col" class="pt-1 pb-2 w-1/3 font-medium text-right">
+                Expires
+              </th>
+            </tr>
+          </thead>
+          <tbody id="openOrdersSpreadSell" class="overflow-x-scroll w-full text-gray-300/90"></tbody>
+          <tbody id="openOrdersSpreadBuy" class="overflow-x-scroll w-full text-gray-300/90"></tbody>
+        </table>
+        </div>
+      </div>
+      <div class="justify-center items-center p-4 w-full">
+        <button id="closeOrders" data-modal-close type="button" class="btn bg-transparent text-gray-300 w-full border border-neutral-800 hover:bg-[#0e0e0e]">Close Orders</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transaction Details Slide-In Modal -->
+  <div id="txDetails" data-modal-target class="hidden overflow-hidden absolute inset-0">
+    <div data-modal-close data-modal-overlay tabindex="-1" data-class-in="opacity-50" data-class-out="opacity-0"
+      class="fixed inset-0 z-40 w-full bg-black opacity-0 duration-500 select-none"></div>
+      <div data-modal-wrapper data-class-in="translate-x-0" data-class-out="translate-x-full" class="flex overflow-auto fixed top-0 right-0 bottom-0 z-50 flex-col w-10/12 max-w-md h-full bg-black border-l transition-transform duration-300 transform translate-x-full scrolling-touch border-neutral-800">
+        <div class="flex justify-between items-center p-6">
+        <h3 class="font-semibold text-gray-300">Transaction Details</h3>
+      </div>
+     <div class="overflow-y-auto overflow-x-hidden relative p-4 h-5/6">
+        <div class="flex flex-col flex-grow justify-center items-start px-4 mt-2 w-full md:px-5 text-gray-300 font-semibold">
+          <p class="py-2">Date:&ensp;<span id="detailDate" class="font-medium"></span></p>
+          <p class="py-2">Type:&ensp;<span id="detailType" class="font-medium"></span></p>
+          <p id="sentToDetail" class="py-2">Sent To:&ensp;<span id="detailSentTo" class="font-medium"></span></p>
+          <p id="sentFromDetail" class="hidden py-2">Sent From:&ensp;<span id="detailSentFrom" class="font-medium"></span></p>
+          <p class="py-2">Amount:&ensp;<span id="detailAmt" class="font-medium"></span></p>
+          <p id="detailFeeLabel" class="py-2">Fee:&ensp;<span id="detailFee" class="font-medium"></span></p>
+          <p class="py-2">Confirmations:&ensp;<span id="detailConfirms" class="font-medium"></span></p>
+          <p class="py-2">TX ID:&ensp;<span id="detailID" class="font-medium"></span></p>
+        </div>
+      </div>
+      <div class="justify-center items-center p-4 w-full">
+        <button id="closeOrders" data-modal-close type="button" class="btn bg-transparent text-gray-300/85 w-full border border-neutral-800 hover:bg-[#0e0e0e]">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Scanner Modal-->
+  <div id="qr_scan" class="hidden min-h-[calc(100dvh-300px)] flex items-center justify-center mt-2">
+    <div class="p-5 w-full rounded-lg border border-neutral-800 md:max-w-[350px]">
+      <div id="reader"></div>
+      <span id="cancelBtn"></span>
+    </div>
+  </div>
+
+  <!-- Transaction Success Modal -->
+  <div id="tx_modal" class="hidden min-h-[calc(100dvh-300px)] flex text-center items-center justify-center">
+    <div class="p-5 w-full rounded-lg border border-neutral-800 md:max-w-[350px]">
+      <h1 id="tx_modal_title" class="-mt-1 pb-3 text-2xl font-semibold text-green-500">Payment Sent!</h1>
+      <p class="text-lg">Transaction ID:</p>
+      <p id="txID" class="text-lg"></p>
+      <button onclick="hideTx_Modal();" class="mt-6 w-full btn btn-blue text-lg">View Dashboard</button>
+    </div>
+  </div>
+
+<script src="../js/qrcode.min.js"></script>
+<script src="../js/qrscan.min.js"></script>
+<script src="../js/cryptojs.min.js"></script>
+<script src="../js/constants.js"></script>
+<script src="../js/assetIds.js"></script>
+<script src="../js/transactionTypes.js"></script>
+<script src="../js/chart.min.js"></script>
+<script src="../js/modals.min.js"></script>
+<script>
+const account = sessionStorage.getItem('account')
+const last = sessionStorage.getItem('last')
+document.getElementById('account_nav').innerText = 'BLX ... ' + last
+document.getElementById('account_modal').innerText = account
+const currency = localStorage.getItem("currency")
+document.getElementById("asset").innerHTML = currency + ' - <button onclick="change()" class="text-blue-500/90">&nbsp;change</button>'
+document.getElementById("assetBtn").innerText = currency
+var q = new URL(apiURL)
+if(apiURL.length >= 36) {
+  document.getElementById("nodeAddress").innerText = q.host.slice(0, 36) + ' ...'
+} else {
+  document.getElementById("nodeAddress").innerText = q.host
+}
+let city = localStorage.getItem('city')
+if(city == null){
+city = "new york"
+}
+document.getElementById("homeCity").innerText = city
+const myCity = document.getElementById("viewHomeCityBtn")
+myCity.addEventListener('click', function (e) { 
+window.location.href = '../market?city=' + city
+})
+const publicKey = sessionStorage.getItem('pubKey')
+
+sessionStorage.removeItem('inactivity')
+
+balances()
+
+// ACCOUNT BALANCES //
+function balances() {
+const params = new URLSearchParams({
+  requestType: 'getAccount',
+  account: account,
+  includeAssets: true
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+  document.getElementById("assetBalance").innerText = "0.00"
+  const assets = data.unconfirmedAssetBalances
+  if (assets != undefined) {
+    for (let i = 0; i < assets.length; i++) {
+      const asset = assets[i].asset
+      const code = assetIds[asset].code
+      if (code == currency) {
+        const defaultBalance = (assets[i].unconfirmedBalanceQNT / 100).toLocaleString(undefined, 
+          {minimumFractionDigits:2, maximumFractionDigits:8})
+        document.getElementById("assetBalance").innerText = defaultBalance
+      } 
+      const assetBalance = (assets[i].unconfirmedBalanceQNT / 100).toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8})
+      const div = code + 'B'
+      const divM = code + 'BM'
+      document.getElementById(div).innerText = assetBalance
+      document.getElementById(divM).innerText = assetBalance + ' ' + code
+      hideZero()
+    }
+  } else {
+    document.getElementById("assetBalance").innerText = "0.00"
+    hideZero()
+  }
+  const blx = data.unconfirmedBalanceNQT
+  if (blx != undefined) {
+    const blxBalance = (data.unconfirmedBalanceNQT / 100000000).toLocaleString(undefined, 
+      {minimumFractionDigits:2, maximumFractionDigits:8})
+    document.getElementById("blxBalance").innerText = blxBalance
+  } else {
+    document.getElementById("blxBalance").innerText = "0.00"
+  }})
+nodeState()
+}
+
+// NODE STATE //
+function nodeState() {
+const params = new URLSearchParams({
+  requestType: 'getState'
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+  const blocks = data.numberOfBlocks
+  const state = data.blockchainState
+  let nodeStatus
+  let chainState
+  if(state == "UP_TO_DATE"){
+    nodeStatus = "<span class='flex flex-shrink-0 w-3 h-3 bg-green-500 rounded-full me-2'></span>Online"
+    chainState = "<span class='flex flex-shrink-0 w-3 h-3 bg-green-500 rounded-full me-2'></span>Synced"
+  } else {
+    nodeStatus = "<span class='flex flex-shrink-0 w-3 h-3 bg-green-500 rounded-full me-2'></span>Online"
+    chainState = "<span class='flex flex-shrink-0 w-3 h-3 bg-green-500 rounded-full me-2'></span>Syncing"
+  }
+  document.getElementById("state").innerHTML = nodeStatus
+  document.getElementById("state2").innerHTML = chainState
+  document.getElementById("blocks").innerText = blocks
+})
+.catch((error) => {
+  console.log(error)
+  document.getElementById('state').innerHTML = "<span class='text-red-500'>Offline</span>"
+  document.getElementById('state2').innerHTML = "<span class='text-red-500'>Offline</span>"
+})
+pendingTransactions()
+}
+
+// PENDING TRANSACTIONS //
+function pendingTransactions() {
+const params2 = new URLSearchParams({
+  requestType: 'getUnconfirmedTransactions',
+  account: account
+})
+fetch(apiURL + params2)
+.then((response) => response.json())
+.then((data) => {
+  let rows = ''
+  const transactions = data.unconfirmedTransactions.reverse()
+  if(transactions.length == 0 ) {
+    document.getElementById('pendingBody').innerHTML = "" 
+  }
+  for (var i = 0; i < transactions.length; i++) {
+    const timestamp = transactions[i].timestamp
+    const transaction = transactions[i].transaction
+    const fee = transactions[i].feeNQT / 100000000
+    const date = getDate(timestamp)
+    const type = transactions[i].type
+    const subtype = transactions[i].subtype
+    const sortedType = transactionTypes[type].subTypes[subtype].name
+    let recipient = transactions[i].recipientRS
+    if(!recipient) {recipient = 'BLX-CHAIN-OPERATION'}
+    let amount = ''
+    if(type == 2) { amount = transactions[i].attachment.quantityQNT / 100 } 
+    if(type != 2) { amount = transactions[i].amountNQT / 100000000 }
+    let asset = ''
+    let assetCode = ''
+    if(type == 2 && subtype == 1 || subtype == 2 || subtype == 3) {
+      asset = transactions[i].attachment.asset
+      assetCode = assetIds[asset].code
+    }
+    let sender = transactions[i].senderRS
+    let direction = ''
+    let amountColor = ''
+    let total = ''
+    if(recipient == account){
+      direction = sender + '<span class="font-semibold text-green-500"> &#8627;</span> You'   
+      amountColor = '<span class="text-green-500">+ ' + amount.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</span>'
+    }
+    if(sender == account) {
+      total = amount + fee
+      direction = 'You <span class="font-semibold text-red-500">&#8627;</span> ' + recipient
+      amountColor = '<span class="text-red-500">-&nbsp;&nbsp;' + total.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</span>'
+    }
+    if(sender == account && type == 1 && subtype == 0) {
+      direction = 'You <span class="font-semibold text-red-500">&#8627;</span> ' + recipient
+      amountColor = '<span class="text-red-500">-&nbsp;&nbsp;' + fee.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</span>'
+    }
+    if(sender == account && type == 2 && (subtype == 0 || subtype == 2 || subtype == 3 || subtype == 4 || subtype == 5 )) {
+      direction = 'You <span class="font-semibold text-red-500">&#8627;</span>' + recipient
+      amountColor = '<span class="text-red-500">-&nbsp;&nbsp;' + fee.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</span>'
+    }
+    
+    rows += '<tr>'
+    rows += '<td class="py-1.5 pr-3 pl-2 w-1/2 text-left md:hidden">' + assetCode + ' ' + sortedType + '<br/><span class="cursor-pointer text-blue-500/70" data-modal-trigger aria-controls="txDetails" aria-expanded="false" onclick="showTxDetails(' + transaction + 'n)">' + date + '</span></td>'
+    rows += '<td class="py-1.5 pr-2 pl-3 w-1/2 text-right md:hidden">' + amountColor + '<br/>' + direction + '</td>'
+    rows += '<td class="hidden py-1 px-2 cursor-pointer md:table-cell text-blue-500/90" data-modal-trigger aria-controls="txDetails" aria-expanded="false" onclick="showTxDetails(' + transaction + 'n)">' + date + '</td>'
+    rows += '<td class="hidden py-1 px-2 md:table-cell">' + assetCode + ' ' + sortedType + '</td>'
+    rows += '<td class="hidden py-1 px-2 md:table-cell">' + amountColor + '</td>'
+    rows += '<td class="hidden py-1 px-2 md:table-cell">' + direction + '</td>'
+    rows += '<td class="hidden py-1 px-2 text-right md:table-cell text-amber-500/90">pending...</td>'
+    rows += '</tr>'
+    document.getElementById('pendingBody').innerHTML = rows
+}
+})
+completedTransactions()
+}
+
+// COMPLETED TRANSACTIONS //
+function completedTransactions() {
+const params = new URLSearchParams({
+  requestType: 'getBlockchainTransactions',
+  account: account,
+  nonPhasedOnly: true,
+  lastIndex: 6
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+  let rows = ''
+  const transactions = data.transactions
+  if(transactions.length == 0) {
+    document.getElementById('noTxMobile').innerText = "No transactions."
+    document.getElementById('noTxDesktop').innerText = "No transactions."
+  }
+  for (var i = 0; i < transactions.length; i++) {
+    const timestamp = transactions[i].timestamp
+    const transaction = transactions[i].transaction
+    const fee = transactions[i].feeNQT / 100000000
+    const date = getDate(timestamp)
+    const type = transactions[i].type
+    const subtype = transactions[i].subtype
+    const sortedType = transactionTypes[type].subTypes[subtype].name
+    let recipient = transactions[i].recipientRS
+    if(!recipient) {recipient = 'BLX-CHAIN-OPERATION'}
+    let amount = ''
+    if(type == 2) { amount = transactions[i].attachment.quantityQNT / 100 } 
+    if(type != 2) { amount = transactions[i].amountNQT / 100000000 }
+    let asset = ''
+    let assetCode = ''
+    if(type == 2 && subtype == 1 || subtype == 2 || subtype == 3) {
+      asset = transactions[i].attachment.asset
+      assetCode = assetIds[asset].code
+    }
+    let sender = transactions[i].senderRS
+    let direction = ''
+    let amountColor = ''
+    let total = ''
+    if(recipient == account){
+      direction = sender + '<span class="font-semibold text-green-500"> &#8627;</span> You'   
+      amountColor = '<span class="text-green-500">+ ' + amount.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</span>'
+    }
+    if(sender == account) {
+      total = amount + fee
+      direction = 'You <span class="font-semibold text-red-500">&#8627;</span> ' + recipient
+      amountColor = '<span class="text-red-500">-&nbsp;&nbsp;' + total.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</span>'
+    }
+    if(sender == account && type == 1 && subtype == 0) {
+      direction = 'You <span class="font-semibold text-red-500">&#8627;</span> ' + recipient
+      amountColor = '<span class="text-red-500">-&nbsp;&nbsp;' + fee.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</span>'
+    }
+    if(sender == account && type == 2 && (subtype == 0 || subtype == 2 || subtype == 3 || subtype == 4 || subtype == 5 )) {
+      direction = 'You <span class="font-semibold text-red-500">&#8627;</span>' + recipient
+      amountColor = '<span class="text-red-500">-&nbsp;&nbsp;' + fee.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</span>'
+    }
+    
+    rows += '<tr>'
+    rows += '<td class="py-1.5 pr-3 pl-2 w-1/2 text-left md:hidden">' + assetCode + ' ' + sortedType + '<br/><span class="cursor-pointer text-blue-500/70" data-modal-trigger aria-controls="txDetails" aria-expanded="false" onclick="showTxDetails(' + transaction + 'n)">' + date + '</span></td>'
+    rows += '<td class="py-1.5 pr-2 pl-3 w-1/2 text-right md:hidden">' + amountColor + '<br/>' + direction + '</td>'
+    rows += '<td class="hidden py-1 px-2 cursor-pointer md:table-cell text-blue-500/90" data-modal-trigger aria-controls="txDetails" aria-expanded="false" onclick="showTxDetails(' + transaction + 'n)">' + date + '</td>'
+    rows += '<td class="hidden py-1 px-2 md:table-cell">' + assetCode + ' ' + sortedType + '</td>'
+    rows += '<td class="hidden py-1 px-2 md:table-cell">' + amountColor + '</td>'
+    rows += '<td class="hidden py-1 px-2 md:table-cell">' + direction + '</td>'
+    rows += '<td class="hidden py-1 px-2 text-right md:table-cell">Completed</td>'
+    rows += '</tr>'
+    document.getElementById('completedBody').innerHTML = rows
+}})
+getMessages()
+}
+
+// GET ACCOUNT MESSAGES //
+function getMessages() {
+let counter = 0
+const params = new URLSearchParams({
+  requestType: 'getPrunableMessages',
+  account: account
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+const messages = data.prunableMessages
+if(messages.length == 0) {
+  document.getElementById("messages").innerText = 0
+}
+for (var i = 0; i < messages.length; i++) {
+  if(messages[i].recipientRS == account) {
+    counter ++
+    document.getElementById("messages").innerText = counter
+  } 
+}
+if(counter == 0) {
+  document.getElementById("messages").innerText = 0
+}})
+getActiveListings()
+}
+
+// GET ACTIVE MARKET LISTING COUNT //
+function getActiveListings() {
+let counter = 0
+const params = new URLSearchParams({
+  requestType: 'getDGSGoods',
+  seller: account
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+const goods= data.goods
+if(goods.length == 0) {
+  document.getElementById("goodsCount").innerText = 0
+  document.getElementById("listingsBodySpinner").innerText = "No recent listings."
+  document.getElementById("listingsBodySpinnerMobile").innerText = "No recent listings."
+}
+for (var i = 0; i < goods.length; i++) {
+  if(goods[i].sellerRS == account) {
+    counter ++
+    document.getElementById("goodsCount").innerText = counter
+}}})
+accountBuyOffers()
+}
+
+// ACCOUNT OPEN BUY ORDERS //
+function accountBuyOffers() {
+let rows = ''
+const params = new URLSearchParams({
+  requestType: 'getAccountCurrentBidOrders',
+  account: account
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+  const orders = data.bidOrders
+  if(orders.length == 0) {
+    document.getElementById("openBuyBody").innerHTML = ''
+  }
+  for (let i = 0; i < orders.length; i++) {
+    const order = orders[i].order
+    const price = orders[i].priceNQT / 1000000
+    const amount = orders[i].quantityQNT / 100
+    const asset = orders[i].asset
+    const code = assetIds[asset].code
+    const name = assetIds[asset].description
+    const svg = code.toLowerCase().slice(0,2)
+    rows += '<tr class="cursor-pointer hover:bg-gray-900/50">'
+    rows += '<th class="hidden">' + order + '</th>'
+    rows += '<th class="py-0.5 font-medium text-left text-gray-300/95"><img class="x-icon" src="../img/flags/' + svg +'.svg"> ' + name + '</th>'
+    rows += '<th class="py-0.5 font-medium text-right">' + code + '</th>'
+    rows += '<th class="py-0.5 font-medium text-right text-green-500">BUY</th>'
+    rows += '<th class="py-0.5 font-medium text-right">' + price.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + ' BLX</th>'
+    rows += '<th class="py-0.5 font-medium text-right">' + amount.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</th>'
+    rows += '<th class="py-0.5 pr-4 text-right text-blue-500 cursor-pointer">Cancel</th>'
+    rows += '</tr>'
+    document.getElementById("openBuyBody").innerHTML = rows
+}})
+accountSellOffers()
+}
+
+// ACCOUNT OPEN SELL ORDERS //
+function accountSellOffers() {
+let rows = ''
+const params = new URLSearchParams({
+  requestType: 'getAccountCurrentAskOrders',
+  account: account
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+  const orders = data.askOrders
+  if(orders.length == 0) {
+    document.getElementById("openSellBody").innerHTML = ''
+  }
+  for (let i = 0; i < orders.length; i++) {
+    const order = orders[i].order
+    const price = orders[i].priceNQT / 1000000
+    const amount = orders[i].quantityQNT / 100
+    const asset = orders[i].asset
+    const code = assetIds[asset].code
+    const name = assetIds[asset].description
+    const svg = code.toLowerCase().slice(0,2)
+    rows += '<tr class="cursor-pointer hover:bg-gray-900/50">'
+    rows += '<th class="hidden">' + order + '</th>'
+    rows += '<th class="py-0.5 font-medium text-left text-gray-300/95"><img class="x-icon" src="../img/flags/' + svg +'.svg"> ' + name + '</th>'
+    rows += '<th class="py-0.5 font-medium text-right">' + code + '</th>'
+    rows += '<th class="py-0.5 font-medium text-right text-red-500">SELL</th>'
+    rows += '<th class="py-0.5 font-medium text-right">' + price.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + ' BLX</th>'
+    rows += '<th class="py-0.5 font-medium text-right">' + amount.toLocaleString(undefined, 
+        {minimumFractionDigits:2, maximumFractionDigits:8}) + '</th>'
+    rows += '<th class="py-0.5 pr-4 text-right text-blue-500 cursor-pointer">Cancel</th>'
+    rows += '</tr>'
+    document.getElementById("openSellBody").innerHTML = rows
+}})
+completedOrders()
+}
+
+// COMPLETED ACCOUNT TRADES //
+function completedOrders() {
+let rows = ''
+const params = new URLSearchParams({
+  requestType: 'getTrades',
+  account: account,
+  includeAssetInfo: true
+})
+fetch(apiURL + params)
+.then((response) => response.json())
+.then((data) => {
+  const trades = data.trades
+  for (let i = 0; i < trades.length; i++) {
+    const timestamp = trades[i].timestamp
+    const date = getDate(timestamp) 
+    const code = trades[i].name
+    const rate = trades[i].priceNQT / 1000000
+    const amount = trades[i].quantityQNT / 100
+    const total = amount * rate
+    const seller = trades[i].sellerRS
+    let color
+    let sign
+    let totalSign
+    let totalColor
+    if(seller == account){
+      color = "text-red-500"
+      type = "SELL"
+      sign = "-"
+      totalSign = "+"
+      totalColor = "text-green-500"
+    } else {
+      color = "text-green-500"
+      type = "BUY"
+      sign = "+"
+      totalSign = "-"
+      totalColor = "text-red-500"
+    }
+    rows += '<tr>'
+    rows += '<th class="py-0.5 font-medium text-left text-blue-500">' + date + '</th>'
+    rows += '<th class="py-0.5 font-medium text-right">' + code + '</th>'
+    rows += '<th class="py-0.5 font-medium text-right ' + color + '">' + type + '</th>'
+    rows += '<th class="py-0.5 font-medium text-right ' + color + '">' + sign + amount.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:8}) + ' ' + code + '</th>'
+    rows += '<th class="py-0.5 font-medium text-right">' + rate.toLocaleString(undefined,{minimumFractionDigits:2, maximumFractionDigits:8}) + ' BLX</th>'
+    rows += '<th class="py-0.5 font-medium text-right ' + totalColor + '">' + totalSign + total.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:8}) + ' BLX</th>'
+    rows += '</tr>'
+    document.getElementById("historyBody").innerHTML = rows
+}})}
+
+// RUN BALANCES AND TXS EVERY 2 SECONDS //
+setInterval(balances, 2000)
+
+// GET EVERY CURRENCY PRICE AND PERCENT //
+function getExchanges(assetId) {
+  let color = 'text-green-500'
+  let symbol = '&#x25B2;'
+  const asset = assetIds[assetId].code
+  const priceDiv = asset + 'P'
+  const priceDivM = asset + 'PM'
+  const oneDayDiv = asset + '1D'
+  const oneDayDivM = asset + '1DM'
+  const date = new Date()
+  const unix = Math.floor(date.getTime() / 1000)
+  const blxNow  = unix - blxTimestamp
+  const yesterday = blxNow - 86400
+  const params = new URLSearchParams({
+    requestType: 'getTrades',
+    asset: assetId,
+    timestamp: yesterday
+  })
+  fetch(apiURL + params)
+  .then((response) => response.json())
+  .then((data) => { 
+    const trades = data.trades
+    if(trades.length == 0) {
+      noTrades(assetId)
+      return
+    }
+    const x = trades.length
+    const cr = trades[0].priceNQT / 1000000
+    const yesterdayRate = trades[x-1].priceNQT / 1000000
+    const s = ((cr - yesterdayRate) / cr) * 100
+    const y = Math.abs(s)
+    if(s < 0) {
+      color = 'text-red-500'
+      symbol = '&#x25BC;'
+    }
+    if(s == 0) { 
+      symbol = "" 
+    }
+    document.getElementById(priceDiv).innerText = cr.toFixed(2) + ' BLX'
+    document.getElementById(priceDivM).innerText = cr.toFixed(2) + ' BLX'
+    document.getElementById(oneDayDiv).innerHTML = '<span class="' + color + '">' + symbol + y.toFixed(2) + '%</span>'
+    document.getElementById(oneDayDivM).innerHTML = '<span class="' + color + '">' + symbol + y.toFixed(2) + '%</span>'
+})}
+
+
+// IF NO TRADES FOR THE TIMESTAMP, 1DAY TO 0 AND PRICE TO LAST TRADED PRICE //
+function noTrades(assetId) {
+const asset = assetIds[assetId].code
+const priceDiv = asset + 'P'
+const priceDivM = asset + 'PM'
+const oneDayDiv = asset + '1D'
+const oneDayDivM = asset + '1DM'
+const params = new URLSearchParams({
+    requestType: 'getTrades',
+    asset: assetId
+  })
+  fetch(apiURL + params)
+  .then((response) => response.json())
+  .then((data) => { 
+    const trades = data.trades
+    if(trades.length == 0) {return}
+    const price = trades[0].priceNQT / 1000000
+    document.getElementById(priceDiv).innerText = price.toFixed(2) + ' BLX'
+    document.getElementById(priceDivM).innerText = price.toFixed(2) + ' BLX'
+    document.getElementById(oneDayDiv).innerHTML = '<span class="text-green-500">0.00%</span>'
+    document.getElementById(oneDayDivM).innerHTML = '<span class="text-green-500">0.00%</span>'
+})}
+
+// GET PRICES AND PERCENTAGES WHEN EXCHANGES TAB IS CLICKED //
+async function runAllExchanges() {
+const assets = assetIds_0
+for (let i = 0; i < assets.length; i++) {
+  await getExchanges(assets[i].asset)
+}}
+
+let a_0;
+
+function startInterval() {
+a_0 = setInterval("runAllExchanges()", 3000)
+}
+
+// CLEAR EXCHANGE INTERVAL FUNCTIONS //
+async function clearAllExchanges() {
+await clearInterval(a_0)
+}
+
+// SEND DEFAULT CURRENCY FUNCTION //
+const form = document.getElementById('formCur')
+form.addEventListener('submit', async function (e) { 
+e.preventDefault()
+document.getElementById('btnCur').style.display = "none"
+document.getElementById('loadingBtnCur').style.display = "inline"
+const b = document.getElementById("currModal").innerText
+const asset = getAssetId(b)
+const a = accountCur.value
+const u = amountCur.value * 10000 / 100 // prevent floating point error
+const units = u.toFixed(0)
+const secretPhrase = secretPhraseCur.value
+let pubKey = " "
+if(publicKey == 'undefined') {
+  pubKey = await getPublicKey(secretPhrase)
+} else {
+  pubKey = publicKey
+}
+const params = new URLSearchParams({
+  requestType: 'transferAsset',
+  recipient: a,
+  publicKey: pubKey,
+  asset: asset,
+  quantityQNT: units,
+  feeNQT: 0,
+  deadline: 60,
+  broadcast: false
+})
+const response = await fetch(apiURL + params, {method: 'POST'})
+const data = await response.json()
+const errorDescription = data.errorDescription
+if(!errorDescription) {
+  const unsignedBytes = data.unsignedTransactionBytes
+  const tx = await sign(unsignedBytes, secretPhrase)
+  const params2 = new URLSearchParams({
+    requestType: 'broadcastTransaction',
+    transactionBytes: tx.payload
+  })
+
+  const response2 = await fetch(apiURL + params2, {method: 'POST'})
+  const data2 = await response2.json()
+  const errorDescription2 = data2.errorDescription
+    if(!errorDescription2) {
+      const tx = data2.transaction
+      document.getElementById('txID').innerText = tx
+      document.getElementById('currency_modal').classList.toggle("hidden")
+      document.getElementById('tx_modal').classList.toggle("hidden")
+      document.getElementById('accountCur').value = ""
+      document.getElementById('amountCur').value = ""
+      document.getElementById('secretPhraseCur').value = ""
+      document.getElementById('btnCur').style.display = "inline"
+      document.getElementById('errorCur').style.display = "none"
+      document.getElementById('loadingBtnCur').style.display = "none"
+    }
+    if(errorDescription2 == 'Failed to broadcast transaction: Transaction signature verification failed') {
+      document.getElementById('accountCur').value = ""
+      document.getElementById('amountCur').value = ""
+      document.getElementById('secretPhraseCur').value = ""
+      document.getElementById('btnCur').style.display = "inline"
+      document.getElementById('loadingBtnCur').style.display = "none"
+      document.getElementById('errorCur').style.display = "block"
+      document.getElementById('errorCur').innerHTML = "<span class='text-red-500'>Wrong passphrase</span>"
+    } if(errorDescription2) {
+        console.log(errorDescription2)
+        document.getElementById('accountCur').value = ""
+        document.getElementById('amountCur').value = ""
+        document.getElementById('secretPhraseCur').value = ""
+        document.getElementById('btnCur').style.display = "inline"
+        document.getElementById('loadingBtnCur').style.display = "none"
+        document.getElementById('errorCur').style.display = "block"
+        document.getElementById('errorCur').innerHTML = "<span class='text-red-500'>" + errorDescription2 + "</span>"
+      }
+} if(errorDescription) {
+    console.log(errorDescription)
+    document.getElementById('accountCur').value = ""
+    document.getElementById('amountCur').value = ""
+    document.getElementById('secretPhraseCur').value = ""
+    document.getElementById('btnCur').style.display = "inline"
+    document.getElementById('loadingBtnCur').style.display = "none"
+    document.getElementById('errorCur').style.display = "block"
+    document.getElementById('errorCur').innerHTML = "<span class='text-red-500'>" + errorDescription + "</span>"
+  }  
+})
+
+// CLEAR CURRENCY ERROR //
+function clearErrorCur() {
+  document.getElementById('errorCur').style.display = "none"
+  document.getElementById('errorCur').innerText = ""
+}
+
+// SEND BLX FUNCTION //
+const form2 = document.getElementById('formBLX')
+form2.addEventListener('submit', async function (e) { 
+e.preventDefault()
+document.getElementById('btnBLX').style.display = "none"
+document.getElementById('loadingBtnBLX').style.display = "inline"
+const a = document.getElementById('accountBLX').value
+const b = document.getElementById('amountBLX').value * 1000000000000 / 10000 // prev float point errors
+const amount = b.toFixed(0)
+const secretPhrase = document.getElementById('secretPhraseBLX').value
+console.log(publicKey)
+let pubKey = " "
+if(publicKey == 'undefined') {
+  pubKey = await getPublicKey(secretPhrase)
+} else {
+  pubKey = publicKey
+}
+console.log(pubKey)
+const params = new URLSearchParams({
+  requestType: 'sendMoney',
+  recipient: a,
+  publicKey: pubKey,
+  amountNQT: amount,
+  feeNQT: 0,
+  deadline: 60,
+  broadcast: false
+})
+const response = await fetch(apiURL + params, {method: 'POST'})
+const data = await response.json()
+const errorDescription = data.errorDescription
+  if(!errorDescription) {
+    const unsignedBytes = data.unsignedTransactionBytes
+    const tx = await sign(unsignedBytes, secretPhrase)
+    const params2 = new URLSearchParams({
+      requestType: 'broadcastTransaction',
+      transactionBytes: tx.payload
+    })
+    const response2 = await fetch(apiURL + params2, {method: 'POST'})
+    const data2 = await response2.json()
+    const errorDescription2 = data2.errorDescription
+    if(!errorDescription2) {
+      const tx = data2.transaction
+      document.getElementById('txID').innerText = tx
+      document.getElementById('blx_modal').classList.toggle("hidden")
+      document.getElementById('tx_modal').classList.toggle("hidden")
+      document.getElementById('accountBLX').value = ""
+      document.getElementById('amountBLX').value = ""
+      document.getElementById('secretPhraseBLX').value = ""
+      document.getElementById('btnBLX').style.display = "inline"
+      document.getElementById('loadingBtnBLX').style.display = "none"
+      document.getElementById('errorBLX').style.display = "none"
+    }
+    if(errorDescription2 == 'Failed to broadcast transaction: Transaction signature verification failed') {
+      document.getElementById('accountBLX').value = ""
+      document.getElementById('amountBLX').value = ""
+      document.getElementById('secretPhraseBLX').value = ""
+      document.getElementById('btnBLX').style.display = "inline"
+      document.getElementById('loadingBtnBLX').style.display = "none"
+      document.getElementById('errorBLX').style.display = "block"
+      document.getElementById('errorBLX').innerHTML = "<span class='text-red-500'>Wrong passphrase</span>"
+    } if(errorDescription2) {
+      console.log(errorDescription2)
+      errorBLX()
+    }
+  } if(errorDescription) {
+    console.log(errorDescription)
+    errorBLX()
+  }
+})
+
+// SEND BLX ERROR //
+function errorBLX() {
+  document.getElementById('accountBLX').value = ""
+  document.getElementById('amountBLX').value = ""
+  document.getElementById('secretPhraseBLX').value = ""
+  document.getElementById('btnBLX').style.display = "inline"
+  document.getElementById('loadingBtnBLX').style.display = "none"
+  document.getElementById('errorBLX').style.display = "block"
+  document.getElementById('errorBLX').innerHTML = "<span class='text-red-500'>An error occured</span>"
+}
+
+// CLEAR BLX ERROR //
+function clearErrorBLX() {
+  document.getElementById('errorBLX').style.display = "none"
+  document.getElementById('errorBLX').innerText = ""
+}
+
+// ACCOUNT QR CODE 
+new QRCode(document.getElementById("accountQR"), {
+  text: account,
+  width: 100,
+  height: 100
+})
+
+// INACTIVITY TIMEOOUT //
+var timeoutTimer;
+var expireTime = 1000*60*8
+
+function expireSession(){
+  clearTimeout(timeoutTimer)
+  timeoutTimer = setTimeout("idleTimeout()", expireTime)
+}
+
+function idleTimeout() {
+  sessionStorage.clear()
+  sessionStorage.setItem("inactivity", true)
+  window.location.replace('../')
+  clearTimeout(updateTimeout)
+  clearTimeout(yetAnotherTimeout)
+}
+document.addEventListener("click", expireSession, false);
+document.addEventListener("keypress", expireSession, false);
+document.addEventListener("scroll", expireSession, false);
+expireSession()
+
+///// END INACTIVITY TIMEOUT /////
+
+function change() {
+  window.location.href = "../currency"
+}
+
+// LOGOUT FUNCTION //
+function logout() {
+  sessionStorage.clear()
+  window.location.replace("../")
+}
+
+// ACTIONS MODAL //
+function openModal() {
+  document.getElementById("dummyDiv").classList.add("hidden")
+  document.getElementById("actions_modal").classList.remove("hidden")
+  document.getElementById("account_nav").disabled = true;
+}
+
+function closeModal() {
+  document.getElementById("dummyDiv").classList.remove("hidden")
+  const activePage = document.getElementsByClassName("active")[0].innerText.toLowerCase()
+  document.getElementById(activePage).classList.remove("hidden")
+  document.getElementById("actions_modal").classList.add("hidden")
+  document.getElementById("currency_modal").classList.add("hidden")
+  document.getElementById("blx_modal").classList.add("hidden")
+  document.getElementById("currency_stats").classList.add("hidden")
+  document.getElementById("swapModal").classList.add("hidden")
+  document.getElementById("limitModal").classList.add("hidden")
+  document.getElementById("account_nav").disabled = false;
+}
+
+// CURRENCY MODAL //
+function currencyModal() {
+  document.getElementById('accountCur').value = ""
+  document.getElementById('amountCur').value = ""
+  document.getElementById('secretPhraseCur').value = ""
+  document.getElementById('errorCur').style.display = "none"
+  document.getElementById("currModal").innerText = currency
+  document.getElementById("currModalBtn").innerText = currency
+  document.getElementById("actions_modal").classList.toggle("hidden")
+  document.getElementById("currency_modal").classList.toggle("hidden")
+}
+
+// CURRENCY MODAL 2 //
+function currencyModal2(c) {
+  document.getElementById('accountCur').value = ""
+  document.getElementById('amountCur').value = ""
+  document.getElementById('secretPhraseCur').value = ""
+  document.getElementById('errorCur').style.display = "none"
+  document.getElementById("currModal").innerText = c
+  document.getElementById("currModalBtn").innerText = c
+  document.getElementById("account_nav").disabled = true;
+  document.getElementById("currencies").classList.toggle("hidden")
+  document.getElementById("currency_modal").classList.toggle("hidden")
+}
+
+// BLX MODAL //
+function blxModal() {
+  document.getElementById('accountBLX').value = ""
+  document.getElementById('amountBLX').value = ""
+  document.getElementById('secretPhraseBLX').value = ""
+  document.getElementById('errorBLX').style.display = "none"
+  document.getElementById("actions_modal").classList.toggle("hidden")
+  document.getElementById("blx_modal").classList.toggle("hidden")
+}
+
+// QR MODAL // 
+function qrModal(modal) {
+  document.getElementById(modal.id).classList.toggle("hidden")
+  document.getElementById("qr_scan").classList.toggle("hidden")
+}
+ 
+// QR SCANNER //
+function qrScan(modal, div) {
+  document.getElementById(modal.id).classList.toggle("hidden")
+  document.getElementById("qr_scan").classList.toggle("hidden")
+  document.getElementById("cancelBtn").innerHTML = '<button onclick="qrModal(' + modal.id + ')" class="py-2 px-3 mt-2 w-full text-lg font-medium text-gray-300 rounded-lg border cursor-pointer border-neutral-800 hover:bg-gray-700/25">Cancel</button>'     
+ 
+  var html5QrcodeScanner = new Html5QrcodeScanner(
+        "reader", { fps: 10, qrbox: 250 })
+    
+  function onScanSuccess(decodedText, decodedResult) {
+    document.getElementById(div.id).value = decodedText
+    document.getElementById("qr_scan").classList.add("hidden")
+    document.getElementById(modal.id).classList.remove("hidden")
+    html5QrcodeScanner.clear()
+  }
+html5QrcodeScanner.render(onScanSuccess)
+}
+
+// FOR TOP TABS //
+function showSection(event, tabName) {
+  clearTimeout(updateTimeout)
+  clearTimeout(yetAnotherTimeout)
+  clearInputs()
+  document.getElementById("dummyDiv").classList.remove("hidden")
+  document.getElementById("actions_modal").classList.add("hidden")
+  document.getElementById("currency_modal").classList.add("hidden")
+  document.getElementById("blx_modal").classList.add("hidden")
+  document.getElementById("currency_stats").classList.add("hidden")
+  document.getElementById("qr_scan").classList.add("hidden")
+  document.getElementById("tx_modal").classList.add("hidden")
+  document.getElementById("swapModal").classList.add("hidden")
+  document.getElementById("limitModal").classList.add("hidden")
+  document.getElementById('errorCur').style.display = "none"
+  document.getElementById('errorBLX').style.display = "none"
+  document.getElementById("account_nav").disabled = false;
+  var i, tabcontent, tabbuttons
+  tabcontent = document.getElementsByClassName("tab-content")
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].classList.add("hidden")
+  }
+  tabbuttons = document.getElementsByClassName("tab-button")
+  for (i = 0; i < tabbuttons.length; i++) {
+    tabbuttons[i].classList.remove("active")
+  }
+  document.getElementById(tabName).classList.toggle("hidden")
+  event.currentTarget.classList.add("active")
+}
+
+// FOR ORDERS TABS //
+function showSection3(event, hide) {
+  const tabbuttons = document.getElementsByClassName("tab-button3")
+  for (i = 0; i < tabbuttons.length; i++) {
+    tabbuttons[i].classList.remove("ordersTab")
+  }
+  if (hide == 'yes'){
+    document.getElementById("openTable").classList.remove("hidden")
+    document.getElementById("historyTable").classList.add("hidden")
+  } else {
+    document.getElementById("openTable").classList.add("hidden")
+    document.getElementById("historyTable").classList.remove("hidden")
+  }
+  event.currentTarget.classList.add("ordersTab")
+}
+
+// VIEW DASHBOARD BUTTON ON PAYMENT MODAL //
+function hideTx_Modal() {
+document.getElementById("tx_modal").classList.add("hidden")
+document.getElementById("overviewBtn").click()
+}
+
+// HIDE EXCHANGE ZERO BALANCES //
+function hideZero() {
+  var rows = document.getElementsByClassName("qty")
+  for(var i = 0; i < rows.length; i++){
+    if(rows[i].innerText == 0  && toggle.checked == true){
+      document.getElementById("flexDiv").classList.remove("flex-grow")
+      rows[i].closest("tr").classList.add("hidden")
+    } else {
+      document.getElementById("flexDiv").classList.add("flex-grow")
+      rows[i].closest("tr").classList.remove("hidden")
+}}}
+
+
+
+
+
+
+
+
+
+// LEFT OFF HERE //
+
+
+
+
+
+
+
+
+
+
+
+// CURRENCY CHARTS //
+let myChart = new Chart(document.getElementById('myChart'))
+let updateTimeout
+
+function stats(currencyX, count) {
+  if(count == 0) {
+    myChart.destroy()
+    getChartData(currencyX, count)
+    document.getElementById("currency_stats").classList.remove("hidden")
+    document.getElementById("dummyDiv").classList.add("hidden")
+    document.getElementById("chartLoader").classList.remove("hidden")
+    const name = getAssetName(currencyX)
+    const price = document.getElementById(currencyX + 'P').innerText
+    const oneDay = document.getElementById(currencyX + '1D').innerHTML
+    document.getElementById("stats_name").innerText = name
+    document.getElementById("stats_price").innerText = price
+    document.getElementById("stats_1D").innerHTML = oneDay
+    document.getElementById("curBtn").innerText = currencyX
+    document.getElementById("account_nav").disabled = true
+  } else {
+    const oneDay = document.getElementById(currencyX + '1D').innerHTML
+    document.getElementById("stats_1D").innerHTML = oneDay
+    updateChartData(currencyX, count)
+}}
+
+async function getChartData(currencyX, count) {
+  clearTimeout(updateTimeout)
+  let price = []
+  let date = []
+  const c = getAssetId(currencyX)
+  const params = new URLSearchParams({
+  requestType: 'getTrades',
+  asset: c
+  })
+  const response = await fetch(apiURL + params)
+  const data = await response.json()
+  const exchanges = data.trades
+  for (let i = exchanges.length - 1; i >= 0; i--) {
+    const timestamp = exchanges[i].timestamp
+    const d = getDate(timestamp) 
+    const rate = exchanges[i].priceNQT / 1000000
+    date.push(d)
+    price.push(rate)
+  }
+createChart(price, date)
+count = count + 1
+updateTimeout = setTimeout(function() {stats(currencyX, count)}, 1000)
+}
+
+async function updateChartData(currencyX, count) {
+  let price = myChart.data.datasets[0].data
+  let date = myChart.data.labels 
+  const len = myChart.data.labels.length
+  const c = getAssetId(currencyX)
+  const params = new URLSearchParams({
+  requestType: 'getTrades',
+  asset: c
+  })
+  const response = await fetch(apiURL + params)
+  const data = await response.json()
+  const exchanges = data.trades
+  const b = exchanges.length - 1
+  let newTx = 0
+  if(b != len) {
+    newTx = b - len
+  }
+  for (let i = newTx ; i >= 0; i--) {
+    const timestamp = exchanges[i].timestamp
+    const d = getDate(timestamp) 
+    const rate = exchanges[i].priceNQT / 1000000
+    const calcDec = Math.pow(10, 2)
+    const currentRate = Math.trunc(rate * calcDec) / calcDec
+    document.getElementById("stats_price").innerText = currentRate.toFixed(2) + ' BLX'
+    date.push(d)
+    price.push(rate)
+  }   
+myChart.update('none')
+updateTimeout = setTimeout(function() {stats(currencyX, count)}, 1000)
+}
+
+var gradient = document.getElementById('myChart').getContext('2d').createLinearGradient(0, 0, 0, 250);
+gradient.addColorStop(0, 'rgb(72, 111, 221, 0.1)');   
+gradient.addColorStop(1, 'rgb(72, 111, 221, 0)');
+
+function createChart(i,t){let a={type:"line",data:{labels:t,datasets:[{fill:!0,backgroundColor:gradient,label:" PRICE / BLX ",data:i,borderColor:"rgb(72, 111, 221)",borderWidth:2,lineTension:.2,radius:0}]},options:{animation:{duration:450},maintainAspectRatio:!1,scales:{y:{beginAtZero:!1,position:"right",border:{dash:[2.5,50],color:"#0a0a0a"},ticks:{format:{maximumFractionDigits:8,minimumFractionDigits:2}}},x:{display:!1}},plugins:{legend:{display:!1}},interaction:{intersect:!1,mode:"index",displayColors:!1}}};myChart=new Chart(document.getElementById("myChart"),a),document.getElementById("chartLoader").classList.add("hidden")}
+
+let yetAnotherTimeout
+
+// HIDE QR WHEN PASSPHRASE ENTERED //
+function hideQR(modal, whichQR) {
+if(modal.value == "") {
+  document.getElementById(whichQR).classList.toggle("hidden")
+} else {
+  document.getElementById(whichQR).classList.add("hidden")
+}}
+
+// RESET QR WHEN CANCELED
+function resetQR(modal, whichQR) {
+document.getElementById(whichQR).classList.remove("hidden")
+}
+
+// SWAP MODAL FUNCTION //
+function swapModal() {
+const code = document.getElementById("curBtn").innerText
+const name = getAssetName(code)
+const price = document.getElementById(code + 'P').innerText
+const oneDay = document.getElementById(code + '1D').innerHTML
+const aBalance = document.getElementById(currency + "B").innerText
+const bBalance = document.getElementById(code + "B").innerText
+const blxBalance  = document.getElementById("blxBalance").innerText
+document.getElementById("swapModalName").innerText = name
+document.getElementById("swapModalPrice").innerText = price
+document.getElementById("swapModalPercent").innerHTML = oneDay
+document.getElementById("swapModalABalance").innerText = aBalance + " " + currency
+document.getElementById("swapModalBBalance").innerText = bBalance + " " + code
+document.getElementById("swapModalABalance").classList.remove("hidden")
+document.getElementById("swapModalBBalance").classList.add("hidden")
+document.getElementById("swapCurrencyA").innerText = currency
+document.getElementById("swapCurrencyB").innerText = code
+if ( document.getElementById("swapCurrencyB").innerText == currency) {
+  document.getElementById("swapModalBBalance").innerText = blxBalance + " BLX"
+  document.getElementById("swapCurrencyB").innerText = "BLX"
+}
+document.getElementById("openOrdersCode").innerText = code
+document.getElementById("currency_stats").classList.add("hidden")
+document.getElementById("swapModal").classList.remove("hidden")
+//yetAnotherTimeout = setTimeout(swapModal, 1250)
+}
+
+// LIMIT MODAL FUNCTION //
+function limitModal() {
+const code = document.getElementById("curBtn").innerText
+const name = getAssetName(code)
+const price = document.getElementById(code + 'P').innerText
+const oneDay = document.getElementById(code + '1D').innerHTML
+const aBalance = document.getElementById(code + "B").innerText
+const blxBalance  = document.getElementById("blxBalance").innerText
+document.getElementById("limitModalName").innerText = name
+document.getElementById("limitModalPrice").innerText = price
+document.getElementById("limitModalPercent").innerHTML = oneDay
+document.getElementById("limitModalABalance").innerText = aBalance + " " + code
+document.getElementById("limitModalBBalance").innerText = blxBalance + " BLX"
+document.getElementById("limitModalABalance").classList.remove("hidden")
+document.getElementById("limitModalBBalance").classList.add("hidden")
+document.getElementById("limitActionA").innerText = "Sell"
+document.getElementById("limitActionB").innerText = "You receive"
+document.getElementById("limitCodeText").innerHTML= 'When <span class="-mt-1 font-semibold text-gray-300/90">&nbsp;1&nbsp;' + code + '&nbsp;</span> is worth'
+
+document.getElementById("limitCurrencyA").innerText = code
+document.getElementById("openOrdersCode").innerText = code
+document.getElementById("currency_stats").classList.add("hidden")
+document.getElementById("limitModal").classList.remove("hidden")
+//yetAnotherTimeout = setTimeout(limitModal, 1250)
+}
+
+function endUpdate() {
+  clearTimeout(updateTimeout)
+}
+
+function endUpdate2() {
+  clearTimeout(yetAnotherTimeout)
+  clearInputs()
+}
+
+// CLEAR INPUTS WHEN OPENING SWAP / LIMIT MODALS //
+function clearInputs() {
+document.getElementById("swapAAmount").value = ""
+document.getElementById("swapBAmount").value = ""
+document.getElementById("limitModalPriceInput").value = ""
+document.getElementById("limitModalCurrencyInput").value = ""
+document.getElementById("limitModalTotal").value = ""
+}
+
+// 2 DECIMAL INPUT ONLY //
+function valid(e) {
+  var t = e.value
+  e.value = t.indexOf(".") >= 0 ? t.slice(0, t.indexOf(".") + 3) : t
+}
+
+// 4 DECIMAL INPUT ONLY //
+function valid4(e) {
+  var t = e.value
+  e.value = t.indexOf(".") >= 0 ? t.slice(0, t.indexOf(".") + 5) : t
+}
+
+// SHOW TRANSACTION DETAILS SLIDE-IN //
+function showTxDetails(tx) {
+const params = new URLSearchParams({
+    requestType: 'getTransaction',
+    transaction: tx.toString()
+    })
+  fetch(apiURL + params)
+  .then((response) => response.json())
+  .then((data) => { 
+    const timestamp = data.timestamp
+    const transaction = data.transaction
+    const date = getDate(timestamp)
+    const type = data.type
+    const subtype = data.subtype
+    const sortedType = transactionTypes[type].subTypes[subtype].name
+    const blxAmount = data.amountNQT / 100000000
+    const currencyAmount = data.attachment.priceNQT / 100
+    const currencyCode = data.attachment.currency
+    let x = ""
+    if(!currencyCode) {
+      currencyName = ""
+      x = "BLX"
+    }
+    const fee = data.feeNQT / 100000000
+    let confirms = data.confirmations
+    if(confirms == undefined) {
+      confirms = 0
+    }
+    let recipient = data.recipientRS
+    if(!recipient ) { recipient = 'BLX-CHAIN-OPERATION' }
+    let amount = ''
+    if(type == 5) { amount = data.attachment.units / 100} 
+    if(type == 5 && subtype == 0) { 
+      amount = 'N/A'
+      x = ""
+    }
+    if(type != 5) { amount = blxAmount }
+    const sender = data.senderRS
+    if(sender == account) {
+    document.getElementById("sentToDetail").classList.remove("hidden")
+    document.getElementById("sentFromDetail").classList.add("hidden")
+    document.getElementById("detailFeeLabel").classList.remove("hidden")
+    document.getElementById("detailSentTo").innerText = recipient
+    document.getElementById("detailAmt").innerHTML = '<span class="text-red-500">- ' + amount.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:8}) + ' ' + currencyName + x + '</span>'
+    document.getElementById("detailFee").innerHTML = '<span class="text-red-500">- ' + fee + " BLX</span>"
+    } else {
+    document.getElementById("sentToDetail").classList.add("hidden")
+    document.getElementById("sentFromDetail").classList.remove("hidden")
+    document.getElementById("detailFeeLabel").classList.add("hidden")
+    document.getElementById("detailSentFrom").innerText = sender
+    document.getElementById("detailAmt").innerHTML = '<span class="text-green-500">+ ' + amount.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:8}) + ' ' + currencyName + x + '</span>'
+    }
+    document.getElementById("detailDate").innerText = date
+    document.getElementById("detailType").innerText = currencyName + ' ' + sortedType
+    document.getElementById("detailConfirms").innerText = confirms.toLocaleString(undefined, {})
+    document.getElementById("detailID").innerText = transaction
+  })
+}
+
+// CANCEL OPEN ORDERS FUNCTION //
+async function cancelOrder() {
+  document.getElementById("cancelOrderBtn").classList.add("hidden")
+  document.getElementById("loadingCancelOrderBtn").classList.remove("hidden")
+  document.getElementById("errorCancel").classList.add("hidden")
+  const passPhrase = document.getElementById("secretPhraseCancel").value
+  if(passPhrase == null || passPhrase == "") {
+    document.getElementById("loadingCancelOrderBtn").classList.add("hidden")
+    document.getElementById("cancelOrderBtn").classList.remove("hidden")
+    document.getElementById("errorCancel").classList.remove("hidden")
+    document.getElementById("errorCancel").innerText = 'Please enter your account passphrase'
+    return
+  } else {
+  const code = document.getElementById("amtCancel").innerText.slice(-4).toLowerCase()
+  const currency = eval(code + 'Id')
+  const b = document.getElementById("blocks").innerText
+  const block = Number(b) + 1
+  const r = document.getElementById("priceCancel").innerText.slice(0, -3)
+  const rate = r * 1000000
+  const a = document.getElementById("amtCancel").innerText.slice(0, -4)
+  const amt = a * 100
+  const type = document.getElementById("typeCancel").innerText
+  let pubKey = " "
+  if(publicKey == 'undefined') {
+    pubKey = await getPublicKey(secretPhrase)
+  } else {
+    pubKey = publicKey
+  }
+  let params = new URLSearchParams ({})
+  if(type == "BUY") {
+  const sellRate = rate + 10000
+  params = new URLSearchParams({
+    requestType: 'publishExchangeOffer',
+    currency: currency,
+    buyRateNQT: rate,
+    sellRateNQT: sellRate, 
+    totalBuyLimit: amt, 
+    totalSellLimit: 0,
+    initialBuySupply: amt,
+    initialSellSupply: 0, 
+    expirationHeight: block,
+    publicKey: pubKey,
+    feeNQT: 0,
+    deadline:60,
+    broadcast: false
+    })
+  } else {
+    const buyRate = rate - 10000
+    params = new URLSearchParams({
+    requestType: 'publishExchangeOffer',
+    currency: currency,
+    buyRateNQT: buyRate,
+    sellRateNQT: rate, 
+    totalBuyLimit: 0, 
+    totalSellLimit: amt,
+    initialBuySupply: 0,
+    initialSellSupply: amt, 
+    expirationHeight: block,
+    publicKey: pubKey,
+    feeNQT: 0,
+    deadline:60,
+    broadcast: false
+    })
+  }
+  const response = await fetch(apiURL + params, {method: 'POST'})
+  const data = await response.json()
+  const errorDescription = data.errorDescription
+  if(!errorDescription) {
+    const unsignedBytes = data.unsignedTransactionBytes
+    const tx = await sign(unsignedBytes, secretPhrase)
+    const params2 = new URLSearchParams({
+      requestType: 'broadcastTransaction',
+      transactionBytes: tx.payload
+    })
+    const response2 = await fetch(apiURL + params2, {method: 'POST'})
+    const data2 = await response2.json()
+    const errorDescription2 = data2.errorDescription
+    if(!errorDescription2) {
+      document.getElementById("cancelForm").classList.add("hidden")
+      document.getElementById("cancelSuccess").classList.remove("hidden")
+    } else {
+      document.getElementById("loadingCancelOrderBtn").classList.add("hidden")
+      document.getElementById("cancelOrderBtn").classList.remove("hidden")
+      document.getElementById("errorCancel").classList.remove("hidden")
+      document.getElementById("errorCancel").innerText = error
+    }
+}}}
+
+
+const openBuyBody = document.querySelector('#openBuyBody')
+openBuyBody.addEventListener('click', function (e) {
+  e.preventDefault()
+  document.getElementById("cancelForm").classList.remove("hidden")
+  document.getElementById("cancelSuccess").classList.add("hidden")
+  document.getElementById("loadingCancelOrderBtn").classList.add("hidden")
+  document.getElementById("cancelOrderBtn").classList.remove("hidden")
+  const cell = e.target.closest('th')
+  if (!cell) {return} 
+  const row = cell.parentElement
+  document.getElementById("orderCancel").innerText = row.cells[0].innerText
+  document.getElementById("typeCancel").innerHTML = '<span class="font-semibold text-green-500">BUY</span>'
+  document.getElementById("nameCancel").innerText = row.cells[1].innerText
+  document.getElementById("amtCancel").innerText = row.cells[5].innerText + ' ' + row.cells[2].innerText
+  document.getElementById("priceCancel").innerText = row.cells[4].innerText
+  document.getElementById("expiresCancel").innerText = row.cells[6].innerText + ' Blocks'
+  document.getElementById("secretPhraseCancel").value = ""
+  document.getElementById("errorCancel").classList.add("hidden")
+  modal.openModal('cancelOrder')
+})
+
+const openSellBody = document.querySelector('#openSellBody')
+openSellBody.addEventListener('click', function (e) { 
+  e.preventDefault()
+  document.getElementById("cancelForm").classList.remove("hidden")
+  document.getElementById("cancelSuccess").classList.add("hidden")
+  document.getElementById("loadingCancelOrderBtn").classList.add("hidden")
+  document.getElementById("cancelOrderBtn").classList.remove("hidden")
+  const cell = e.target.closest('th')
+  if (!cell) {return} 
+  const row = cell.parentElement
+  document.getElementById("orderCancel").innerText = row.cells[0].innerText
+  document.getElementById("typeCancel").innerHTML = '<span class="font-semibold text-red-500">SELL</span>'
+  document.getElementById("nameCancel").innerText = row.cells[1].innerText
+  document.getElementById("amtCancel").innerText = row.cells[5].innerText + ' ' + row.cells[2].innerText
+  document.getElementById("priceCancel").innerText = row.cells[4].innerText
+  document.getElementById("expiresCancel").innerText = row.cells[6].innerText + ' Blocks'
+  document.getElementById("secretPhraseCancel").value = ""
+  document.getElementById("errorCancel").classList.add("hidden")
+  modal.openModal('cancelOrder')
+})
+
+
+// OPEN ORDERS FOR SWAP / LIMIT MODALS // 
+let x = document.getElementById("openOrdersLimit")
+x.addEventListener('click', function (e) { 
+const code = document.getElementById("limitCurrencyA").innerText.toLowerCase()
+openOrdersSpreadSell(code)
+openOrdersSpreadBuy(code)
+})
+
+let y = document.getElementById("openOrdersSwap")
+y.addEventListener('click', function (e) {
+const code = document.getElementById("openOrdersCode").innerText.toLowerCase()
+openOrdersSpreadSell(code)
+openOrdersSpreadBuy(code)
+
+})
+
+function openOrdersSpreadSell(code) {
+const currency = eval(code + "Id")
+console.log(currency)
+  const params = new URLSearchParams({
+    requestType: "getSellOffers",
+    currency: currency,
+    availableOnly: true
+  })
+
+  fetch(apiURL + params)
+  .then((response) => response.json())
+  .then((data) => { 
+    const offers = data.offers
+    let rows = ' '
+    for (let i = offers.length -1; i >= 0; i--) { 
+      const rateNQT = offers[i].rateNQT / 1000000
+      const amount = offers[i].limit / 100
+      const expires = offers[i].expirationHeight
+      rows += '<tr>'
+      rows += '<td class="text-red-500 w-1/3 font-medium text-left">' + rateNQT.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</td>'
+      rows += '<td class="text-red-500 w-1/3 font-medium text-right">' + amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits:5}) + '</td>'
+      rows += '<td class="text-red-500 w-1/3 font-medium text-right">' + expires + '</td>'
+      rows += '</tr>'
+      document.getElementById("openOrdersSpreadSell").innerHTML = rows
+    }
+  })
+}
+
+
+
+function openOrdersSpreadBuy(code) {
+const currency = eval(code + "Id")
+  const params = new URLSearchParams({
+    requestType: "getBuyOffers",
+    currency: currency,
+    availableOnly: true
+  })
+
+  fetch(apiURL + params)
+  .then((response) => response.json())
+  .then((data) => { 
+    console.log(data)
+    let rows = ' '
+    const offers = data.offers
+    for (var i = 0; i < offers.length; i++) { 
+      const rateNQT = offers[i].rateNQT / 1000000
+      const amount = offers[i].limit / 100
+      const expires = offers[i].expirationHeight
+      rows += '<tr>'
+      rows += '<td class="text-green-500 w-1/3 font-medium text-left">' + rateNQT.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + '</td>'
+      rows += '<td class="text-green-500 w-1/3 font-medium text-right">' + amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits:5}) + '</td>'
+      rows += '<td class="text-green-500 w-1/3 font-medium text-right">' + expires + '</td>'
+      rows += '</tr>'
+      document.getElementById("openOrdersSpreadBuy").innerHTML = rows
+    }
+  })
+}
+
+
+
+
+
+
+////// SWAP / LIMIT ORDER FUNCTIONS //////
+
+// SWITCH CURRENCIES ON ARROW CLICK FOR SWAP MODAL //
+function switchCurrencies() {
+  const a = document.getElementById("swapCurrencyA").innerText
+  const b = document.getElementById("swapCurrencyB").innerText
+  if (a == currency) {
+    document.getElementById("swapModalABalance").classList.add("hidden")
+    document.getElementById("swapModalBBalance").classList.remove("hidden")
+  } else {
+    document.getElementById("swapModalABalance").classList.remove("hidden")
+    document.getElementById("swapModalBBalance").classList.add("hidden")
+  }
+  document.getElementById("swapCurrencyA").innerText = b
+  document.getElementById("swapCurrencyB").innerText = a
+}
+
+// SWITCH CURRENCIES ON ARROW CLICK FOR LIMIT MODAL //
+function switchCurrencies2() {
+  const a = document.getElementById("limitActionA").innerText
+  const b = document.getElementById("limitActionB").innerText
+  if (a != "Buy") {
+    document.getElementById("limitActionA").innerText = "Buy"
+    document.getElementById("limitActionB").innerText = "Order total"
+    document.getElementById("limitModalABalance").classList.add("hidden")
+    document.getElementById("limitModalBBalance").classList.remove("hidden")
+  } else {
+    document.getElementById("limitActionA").innerText = "Sell"
+    document.getElementById("limitActionB").innerText = "You receive"
+    
+    document.getElementById("limitModalABalance").classList.remove("hidden")
+    document.getElementById("limitModalBBalance").classList.add("hidden")
+  }
+}
+
+
+// GET TOTAL FOR LIMIT MODAL //
+function getLimitTotal() {
+  const price = document.getElementById("limitModalPriceInput").value
+  const amount = document.getElementById("limitModalCurrencyInput").value
+  const total = amount * price
+  if(amount > 0){
+    document.getElementById("limitModalTotal").value = total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 5});
+}}
+
+// HIDE LIMIT PASSPHRASE OVERLAY MODAL // 
+function hideLimitOverlay() {
+  document.getElementById("passphraseOverlayLimit").classList.add("hidden")
+  document.getElementById("secretPhraseLimit").value = ""
+}
+
+// LIMIT ORDER SUBMIT & SHOW LIMIT PASSPHRASE OVERLAY //
+let limitForm = document.getElementById("limitForm")
+limitForm.addEventListener('submit', function (e) { 
+e.preventDefault()
+document.getElementById("overlayErrorLimit").classList.add("hidden")
+document.getElementById("overlayErrorLimit").innerText = ""
+document.getElementById("passphraseOverlayLimit").classList.remove("hidden")
+})
+
+// LIMIT ORDER PASSPHRASE MODAL SUBMIT //
+async function submitLimitOrder() {
+document.getElementById("overlayErrorLimit").classList.add("hidden")
+document.getElementById("overlayErrorLimit").innerText = ""
+const price = document.getElementById("limitModalPriceInput").value * 100000000 / 100 // prev float point err
+const amount = document.getElementById("limitModalCurrencyInput").value * 10000 / 100 // prev float point err
+const currency = document.getElementById("limitCurrencyA").innerText
+const code = eval(currency.toLowerCase() + "Id")
+const action = document.getElementById("limitActionA").innerText
+const t = document.getElementById("limitModalTotal").value  
+const totalBLX = parseFloat(t.replace(/,/g, '')) * 10000000000 / 100 // prevent floating point errors
+const secretPhrase = document.getElementById("secretPhraseLimit").value
+if (secretPhrase == "") {
+  document.getElementById("overlayErrorLimit").classList.remove("hidden")
+  document.getElementById("overlayErrorLimit").innerText = "Please enter your account passphrase."
+  return
+}
+let pubKey = " "
+if( publicKey == 'undefined') {pubKey = await getPublicKey(secretPhrase)} 
+else { pubKey = publicKey}
+
+
+// GET CALL BASED ON ACTION WHICH IS OPPOSITE FOR THE CALL 
+let call = " "
+if(action == "Sell") { 
+  call = "getBuyOffers"
+}
+if(action == "Buy") { 
+  call = "getSellOffers"
+}
+
+const params = new URLSearchParams({
+  requestType: call,
+  currency: code,
+  availableOnly: true
+})
+const response = await fetch(apiURL + params)
+const data = await response.json()
+const offers = data.offers
+let initialUnits = 0
+for (var i = 0; i < offers.length; i++) { 
+  if (action == "Sell" && offers[i].rateNQT >= price) {
+    initialUnits += parseInt(offers[i].limit)
+  }
+  if (action == "Buy" && offers[i].rateNQT <= price) {
+    initialUnits += parseInt(offers[i].limit)
+  }
+}
+
+// CHECK UNITS BOUGHT/SOLD IN THIS BLOCK AND SUBTRACT FROM PREV CALL
+
+const params2 = new URLSearchParams({
+  requestType: "getExpectedExchangeRequests",
+  currency: code
+})
+const response2 = await fetch(apiURL + params2)
+const data2 = await response2.json()
+const exchanges = data2.exchangeRequests
+let expiredUnits = 0
+for (var i = 0; i < exchanges.length; i++) {
+  if (action == "Sell" && exchanges[i].subtype == 6 && exchanges[i].rateNQT >= price) {
+    expiredUnits += parseInt(exchanges[i].units)
+  }
+  if (action == "Buy" && exchanges[i].subtype == 5 && exchanges[i].rateNQT <= price) {
+    expiredUnits += parseInt(exchanges[i].units)
+  }
+}
+
+const units = initialUnits - expiredUnits
+
+if (units == 0) {
+  console.log("There are 0 units available")
+  console.log("This " + action + " order will be a full limit order")
+}
+
+if (units >= amount) {
+  console.log("There are " + units + " units available")
+  console.log("This " + action + " order will be filled")
+}
+
+if (units != 0 && units < amount) {
+  const remaining = amount - units
+  console.log("There are " + units + "/" + amount + " units available")
+  console.log("A limit " + action + " order for " + remaining + " units will be made")
+}
+
+}
+
+
+
+
+
+// SWAP ORDERS //
+
+// GET TOTAL FOR SWAP //
+
+function getSwapTotal() {
+  const amount = document.getElementById("swapAAmount").value * 100
+  const f = document.getElementById("swapCurrencyA").innerText.toLowerCase()
+  const t = document.getElementById("swapCurrencyB").innerText.toLowerCase()
+}
+
+
+// HIDE LIMIT PASSPHRASE OVERLAY MODAL // 
+function hideSwapOverlay() {
+  document.getElementById("passphraseOverlaySwap").classList.add("hidden")
+  document.getElementById("secretPhraseSwap").value = ""
+}
+
+// LIMIT ORDER SUBMIT & SHOW LIMIT PASSPHRASE OVERLAY //
+let swapForm = document.getElementById("swapForm")
+swapForm.addEventListener('submit', function (e) { 
+e.preventDefault()
+document.getElementById("overlayErrorSwap").classList.add("hidden")
+document.getElementById("overlayErrorSwap").innerText = ""
+document.getElementById("passphraseOverlaySwap").classList.remove("hidden")
+})
+
+async function submitSwapOrder() {
+
+}
+
+
+
+
+
+
+
+
+</script>
+</body>
+</html>

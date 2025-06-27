@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="0xlist: the decentralized marketplace on the Blue0x blockchain">
+<title>0xlist: the decentralized marketplace on the Blue0x blockchain</title>
+<link rel="stylesheet" href="../../css/styles.css">
+<link rel="icon" type="image/x-icon" href="../../img/favicon.ico">
+</head>
+
+<body class="flex overflow-auto justify-center w-full min-h-screen text-blue-700 md:p-2">
+
+<div class="flex w-full lg:max-w-[900px]">
+
+<div class="hidden md:flex flex-col lg:h-[calc(100vh+290px)] overflow-auto w-[300px] bg-gray-100 border-l border-r border-gray-300 items-center">
+  <a class="flex inline-flex justify-center items-center pt-1 pb-4 w-full text-3xl cursor-pointer hover:underline" href="../"><img class="pr-1.5 w-7 h-7 text-purple-500" src="../../img/computer.svg">0xlist</a>
+  <button class="flex items-center py-1 px-2 text-green-800 bg-white post">
+    <img class="pr-1 w-5 h-5" src="../../img/square-pen.svg"> 
+    post an ad
+  </button>
+
+  <button class="flex items-center mt-3 py-1 px-2.5 text-black bg-white" onclick="window.location.href = '../messages'">
+    <img class="pr-1 w-5 h-5" src="../../img/mail.svg"> 
+    messages
+  </button>
+
+  <button class="flex items-center mt-3 py-1 px-4 text-black bg-white" onclick="window.location.href = '../../dashboard'">
+    <img class="pr-1 w-5 h-5" src="../../img/user.svg"> 
+    account
+  </button>
+</div>
+
+<div class="flex grid relative items-center w-full h-11 border-t border-b border-gray-300 md:mx-3 bg-gray-200/70">
+  <p class="hidden md:block pt-1 pl-4 text-2xl text-black" id="city">&nbsp;</p>
+  <p class="md:hidden pt-1 pl-3 text-2xl text-black" id="cityM">&nbsp;</p>
+  <div class="inline-flex absolute right-5">
+    <div class="cursor-pointer post">
+      <img class="pt-1 pl-0.5 mr-4 -mb-2 w-5 h-5" src="../../img/square-pen.svg">
+      <span class="text-xs text-black">post</span>
+    </div>
+    <div class="cursor-pointer" onclick="window.location.href = '../messages'">
+      <img class="pt-1 pl-0.5 ml-0.5 mr-4 -mb-2 w-5 h-5" src="../../img/mail.svg">
+      <span class="text-xs text-black">msgs</span>
+    </div>
+    <div class="cursor-pointer" onclick="window.location.href = '../../dashboard'">
+      <img class="pt-1 pl-0.5 -mb-2 w-5 h-5" src="../../img/user.svg">
+      <span class="text-xs text-black">acct</span>
+    </div>
+  </div>
+
+  <div class="mt-4 mx-2 md:mx-0">
+    <div class="flex overflow-hidden relative items-center w-full h-8 bg-white rounded border border-gray-300">
+      <div class="grid place-items-center w-8 h-full text-gray-400 border-r border-gray-300">
+        <img class="w-4 h-4" src="../../img/search.svg">
+      </div>
+        <input class="pl-1.5 w-full h-full text-sm text-gray-700 outline-none focus:outline-none" type="text" id="search" placeholder="search..." /> 
+    </div>
+  </div>
+  
+  <div class="grid grid-cols-2 gap-5 ml-2.5 mr-2 md:ml-1 mt-2 md:mt-3">
+    <div class="relative w-42 h-[550px]">
+      <div class="section">
+        for sale
+      </div>
+      <div class="flex absolute left-0 flex-col mt-1 text-sm leading-snug lg:left-2">
+        <a class="link forSale">antiques</a>
+        <a class="link forSale">appliances</a>
+        <a class="link forSale">arts/crafts</a>
+        <a class="link forSale">atv/utv/sno</a>
+        <a class="link forSale">auto parts</a>
+        <a class="link forSale">aviation</a>
+        <a class="link forSale">baby/kid</a>
+        <a class="link forSale">barter</a>
+        <a class="link forSale">beauty</a>
+        <a class="link forSale">bike parts</a>
+        <a class="link forSale">bikes</a>
+        <a class="link forSale">boat parts</a>
+        <a class="link forSale">boats</a>
+        <a class="link forSale">books</a>
+        <a class="link forSale">business</a>
+        <a class="link forSale">cars/trucks</a>
+        <a class="link forSale">cd/dvd</a>
+        <a class="link forSale">cell phones</a>
+        <a class="link forSale">clothes</a>
+        <a class="link forSale">collectibles</a>
+        <a class="link forSale">computers</a>
+        <a class="link forSale">electronics</a>
+      </div>
+      <div class="flex absolute -right-1.5 flex-col mt-1 text-sm leading-snug lg:right-6">
+        <a class="link forSale">farm/garden</a>
+        <a class="link forSale">free</a>
+        <a class="link forSale">furniture</a>
+        <a class="link forSale">garage sale</a>
+        <a class="link forSale">general</a>
+        <a class="link forSale">heavy equip</a>
+        <a class="link forSale">household</a>
+        <a class="link forSale">jewelry</a>
+        <a class="link forSale">materials</a>
+        <a class="link forSale">motocycles</a>
+        <a class="link forSale">music instr</a>
+        <a class="link forSale">photo/video</a>
+        <a class="link forSale">rvs/camp</a>
+        <a class="link forSale">sporting</a>
+        <a class="link forSale">tickets</a>
+        <a class="link forSale">tools</a>
+        <a class="link forSale">toys/games</a>
+        <a class="link forSale">trailers</a>
+        <a class="link forSale">video gaming</a>
+        <a class="link forSale">wanted</a>
+        <a class="link forSale">wheels/tires</a>
+      </div>
+    </div>
+
+    <div class="relative h-48 w-38">
+      <div class="section">
+        housing
+      </div>
+      <div class="flex absolute left-1 flex-col mt-1 text-sm leading-snug lg:left-4">
+        <a class="link housing">apts/housing</a>
+        <a class="link housing">housing wanted</a>
+        <a class="link housing">office/commercial</a>
+        <a class="link housing">parking/storage</a>
+        <a class="link housing">real estate for sale</a>
+        <a class="link housing">rooms/shared</a>
+        <a class="link housing">sublet/temp</a>
+        <a class="link housing">vacation rentals</a>
+      </div>
+    </div>
+
+    <div class="relative -mt-20 h-36 w-42">
+      <div class="section">
+        services
+      </div>
+      <div class="flex absolute left-0 flex-col mt-1 text-sm leading-snug lg:left-2">
+        <a class="link services">automotive</a>
+        <a class="link services">beauty</a>
+        <a class="link services">computer</a>
+        <a class="link services">creative</a>
+        <a class="link services">farm/garden</a>
+        <a class="link services">financial</a>
+        <a class="link services">health/well</a>
+        <a class="link services">household</a>
+      </div>
+      <div class="flex absolute -right-1.5 flex-col pl-1 mt-1 text-sm leading-snug lg:right-6">
+        <a class="link services">labor/move</a>
+        <a class="link services">legal</a>
+        <a class="link services">marine</a>
+        <a class="link services">pet</a>
+        <a class="link services">real estate</a>
+        <a class="link services">skilled trade</a>
+        <a class="link services">writing</a>
+      </div>
+    </div>
+
+    <div class="relative w-38 -mt-[365px]">
+      <div class="section">
+        jobs
+      </div>
+      <div class="flex absolute left-1 flex-col mt-1 text-sm leading-snug lg:left-4">
+        <a class="link jobs">accounting/finance</a>
+        <a class="link jobs">admin/office</a>
+        <a class="link jobs">arch/engineering</a>
+        <a class="link jobs">art/media/design</a>
+        <a class="link jobs">biotech/science</a>
+        <a class="link jobs">business/mgt</a>
+        <a class="link jobs">customer service</a>
+        <a class="link jobs">education</a>
+        <a class="link jobs">etc/misc</a>
+        <a class="link jobs">food/bev/hosp</a>
+        <a class="link jobs">general labor</a>
+        <a class="link jobs">government</a>
+        <a class="link jobs">human resources</a>
+        <a class="link jobs">legal/paralegal</a>
+        <a class="link jobs">manufacturing</a>
+        <a class="link jobs">marketing/pr</a>
+        <a class="link jobs">medical/health</a>
+        <a class="link jobs">nonprofit sector</a>
+        <a class="link jobs">real estate</a>
+        <a class="link jobs">retail/wholesale</a>
+        <a class="link jobs">sales</a>
+        <a class="link jobs">salon/spa/fitness</a>
+        <a class="link jobs">security</a>
+        <a class="link jobs">skilled trade</a>
+        <a class="link jobs">software</a>
+        <a class="link jobs">systems/network</a>
+        <a class="link jobs">tech support</a>
+        <a class="link jobs">transport</a>
+        <a class="link jobs">tv/film/video</a>
+        <a class="link jobs">web/info design</a>
+        <a class="link jobs mb-4">writing/editing</a>
+      </div>
+    </div>
+
+    <div class="relative mt-10 w-42">
+      <div class="section">
+        community
+      </div>
+      <div class="flex absolute left-1 flex-col mt-1 text-sm leading-snug lg:left-2">
+        <a class="link community">activities</a>
+        <a class="link community">artists</a>
+        <a class="link community">classes</a>
+        <a class="link community">events</a>
+      </div>
+      <div class="flex absolute right-1 flex-col mt-1 text-sm leading-snug lg:right-8">
+        <a class="link community">musicians</a>
+        <a class="link community">volunteers</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="hidden flex-col items-center p-1 w-48 bg-gray-100 border-r border-l border-gray-300 md:flex">
+  <div class="flex px-1 my-2 text-sm text-black bg-white border border-gray-500 w-26">
+    english &ensp; &#9660;
+  </div>
+</div>
+<script src="../../js/discordBot.js"></script>
+<script>
+//discordMessage()
+const queryString = window.location.search
+const urlParams = new URLSearchParams(queryString)
+const city = urlParams.get("city")
+document.getElementById("city").innerText = city
+if(city.length > 20) {
+document.getElementById("cityM").innerText = city.slice(0,21) + '...'
+} else {
+document.getElementById("cityM").innerText = city
+}
+const currency = urlParams.get("currency")
+
+const categories = document.getElementsByClassName("link")
+for (var i = 0; i < categories.length; i++) {
+  categories[i].addEventListener('click', function (e) { 
+  const cat = e.target.innerHTML
+  const section = e.target.classList[1]
+  window.location.href = '../search?currency='+ currency + '&city=' + city + '&section=' + section + '&category=' + cat
+})}
+
+const post = document.getElementsByClassName("post")
+for (var i = 0; i < post.length; i++) {
+  post[i].addEventListener('click', function (e) { 
+  window.location.href = '../post?&currency=' + currency + '&city=' + city
+})}
+</script>
+</body>
+</html>
